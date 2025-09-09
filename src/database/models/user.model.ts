@@ -27,8 +27,8 @@ export default function (sequelize: Sequelize): typeof UserModel {
         {
             id: {
                 primaryKey: true,
-                type: DataTypes.UUID,
-                defaultValue: DataTypes.UUID,
+                type: DataTypes.UUIDV4,
+                defaultValue: DataTypes.UUIDV4,
             },
             email: {
                 allowNull: false,
