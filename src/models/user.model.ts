@@ -12,6 +12,7 @@ export class UserModel
     public name!: string;
     public username!: string;
     public password!: string;
+    public refreshToken!: string | undefined;
     public created_at: string | undefined;
     public updated_at: string | undefined;
 
@@ -44,6 +45,10 @@ export default function (sequelize: Sequelize): typeof UserModel {
             password: {
                 allowNull: false,
                 type: DataTypes.STRING(255),
+            },
+            refreshToken: {
+                allowNull: true,
+                type: DataTypes.TEXT,
             },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,
