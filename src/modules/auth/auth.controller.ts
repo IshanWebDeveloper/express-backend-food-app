@@ -14,7 +14,6 @@ export const signUpController = async (
 ): Promise<void> => {
     try {
         const userData = req.body;
-        console.log(userData);
         const response = await signUpService(userData);
 
         res.status(201).json({

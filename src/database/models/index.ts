@@ -14,7 +14,7 @@ import OrderModel from './order.model';
 import OrderItemModel from './orderItem.model';
 import CartModel from './cart.model';
 import CartItemModel from './cartItem.model';
-
+import FavoritesFoodModel from './favoritesFood.model';
 const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
     host: DB_HOST,
     port: DB_PORT ? Number(DB_PORT) : undefined,
@@ -29,6 +29,7 @@ const Order = OrderModel(sequelize);
 const OrderItem = OrderItemModel(sequelize);
 const Cart = CartModel(sequelize);
 const CartItem = CartItemModel(sequelize);
+const FavoritesFood = FavoritesFoodModel(sequelize);
 
 // Associations
 
@@ -37,6 +38,9 @@ FoodProduct.belongsTo(Category, { foreignKey: 'categoryId' });
 
 User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User, { foreignKey: 'userId' });
+
+FavoritesFood.belongsTo(User, { foreignKey: 'userId' });
+FavoritesFood.belongsTo(FoodProduct, { foreignKey: 'foodId' });
 
 Order.belongsToMany(FoodProduct, { through: OrderItem, foreignKey: 'orderId' });
 FoodProduct.belongsToMany(Order, {
@@ -59,4 +63,5 @@ export {
     OrderItem,
     Cart,
     CartItem,
+    FavoritesFood,
 };
