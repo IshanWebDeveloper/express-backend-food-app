@@ -12,9 +12,11 @@ export class UserModel
     public name!: string;
     public username!: string;
     public password!: string;
+    public refresh_token?: string;
+    public delivery_address!: string;
+    public phone_number!: string;
     public created_at: string | undefined;
     public updated_at: string | undefined;
-
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -24,7 +26,7 @@ export default function (sequelize: Sequelize): typeof UserModel {
         {
             id: {
                 primaryKey: true,
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
             email: {
@@ -44,6 +46,18 @@ export default function (sequelize: Sequelize): typeof UserModel {
             password: {
                 allowNull: false,
                 type: DataTypes.STRING(255),
+            },
+            delivery_address: {
+                allowNull: false,
+                type: DataTypes.STRING,
+            },
+            phone_number: {
+                allowNull: false,
+                type: DataTypes.STRING,
+            },
+            refresh_token: {
+                allowNull: true,
+                type: DataTypes.TEXT,
             },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,

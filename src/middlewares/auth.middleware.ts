@@ -1,7 +1,7 @@
 import { CustomError } from '@/utils/custom-error';
 import { JWT_ACCESS_TOKEN_SECRET } from '@/config';
 import { NextFunction, Request, Response } from 'express';
-import { verifyJWT } from './jwt.service';
+import { verifyAccessToken } from './jwt.service';
 
 const decodeToken = async (header: string | undefined) => {
     if (!header) {
@@ -9,7 +9,10 @@ const decodeToken = async (header: string | undefined) => {
     }
 
     const token = header.replace('Bearer ', '');
-    const payload = await verifyJWT(token, JWT_ACCESS_TOKEN_SECRET as string);
+    const payload = await verifyAccessToken(
+        token,
+        JWT_ACCESS_TOKEN_SECRET as string,
+    );
 
     return payload;
 };

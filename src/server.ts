@@ -45,7 +45,7 @@ appServer.use(express.urlencoded({ extended: true }));
 appServer.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Use the router with the /api prefix
-appServer.use('/api', router);
+appServer.use('/api/v1', router);
 appServer.use(errorHandler);
 
 appServer.all('*', (req, res) => {

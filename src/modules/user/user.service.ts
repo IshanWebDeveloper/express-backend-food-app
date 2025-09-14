@@ -1,10 +1,10 @@
 import { repo } from './user.repo';
 import { CustomError } from '@/utils/custom-error';
-import { verifyJWT } from '@/middlewares/jwt.service';
+import { verifyAccessToken } from '@/middlewares/jwt.service';
 import { JWT_ACCESS_TOKEN_SECRET } from '@/config';
 
 export const getUserProfileService = async (accessToken: string) => {
-    const decodeToken = await verifyJWT(
+    const decodeToken = await verifyAccessToken(
         accessToken,
         JWT_ACCESS_TOKEN_SECRET as string,
     );

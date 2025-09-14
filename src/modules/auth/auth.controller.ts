@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
-import { signInService, signUpService } from './auth.service';
+import {
+    logoutService,
+    refreshTokenService,
+    signInService,
+    signUpService,
+} from './auth.service';
 
 export const signUpController = async (
     req: Request,
@@ -8,11 +13,12 @@ export const signUpController = async (
 ): Promise<void> => {
     try {
         const userData = req.body;
+        console.log(userData);
         const response = await signUpService(userData);
 
         res.status(201).json({
             message: 'Successfully signed up',
-            data: response.user,
+            data: response,
         });
     } catch (error) {
         next(error);
@@ -30,6 +36,39 @@ export const signInController = async (
 
         res.status(200).json({
             message: 'Successfully signed in',
+            data: response,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const signOutController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    try {
+        const { userId } = req.body;
+        await logoutService(userId);
+        res.status(200).json({
+            message: 'Successfully signed out',
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const refreshTokenController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    try {
+        const { refreshToken } = req.body;
+        const response = await refreshTokenService(refreshToken);
+        res.status(200).json({
+            message: 'Successfully refreshed token',
             data: response,
         });
     } catch (error) {

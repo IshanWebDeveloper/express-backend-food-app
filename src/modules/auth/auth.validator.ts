@@ -37,6 +37,18 @@ export const validateSignUp = (userData: any) => {
                     'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
                 'any.required': 'Password is required.',
             }),
+        delivery_address: Joi.string().min(1).required().messages({
+            'string.min':
+                'Delivery Address should at least minimum 1 character',
+            'any.required': 'Delivery Address is required',
+        }),
+        phone_number: Joi.string()
+            .pattern(new RegExp('^[0-9]+$'))
+            .required()
+            .messages({
+                'string.pattern.base': 'Phone number must contain only digits.',
+                'any.required': 'Phone number is required.',
+            }),
     });
 
     return schema.validate(userData, options);

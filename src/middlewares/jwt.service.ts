@@ -1,15 +1,16 @@
 import jwt from 'jsonwebtoken';
-
-export const generateJWT = async (payload: any, secretKey: string) => {
+export const generateAccessToken = async (payload: any, secretKey: string) => {
     try {
-        const token = `Bearer ${jwt.sign(payload, secretKey)}`;
+        const token = `${jwt.sign(payload, secretKey, {
+            expiresIn: '15m',
+        })}`;
         return token;
     } catch (error: any) {
         throw new Error(error.message);
     }
 };
 
-export const verifyJWT = async (
+export const verifyAccessToken = async (
     token: string,
     secretKey: string,
 ): Promise<jwt.JwtPayload> => {
@@ -33,7 +34,7 @@ export const generateRefreshToken = async (
     expiresIn: jwt.SignOptions['expiresIn'] = '7d',
 ) => {
     try {
-        const token = `Bearer ${jwt.sign(payload, secretKey, {
+        const token = `${jwt.sign(payload, secretKey, {
             expiresIn,
         })}`;
         return token;
