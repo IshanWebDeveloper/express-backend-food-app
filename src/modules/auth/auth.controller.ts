@@ -84,7 +84,9 @@ export const updateUserController = async (
     next: NextFunction,
 ): Promise<void> => {
     try {
-        const { userId, updateData } = req.body;
+        const { userId } = req.params;
+        const updateData = req.body;
+        console.log('updateData', updateData, userId);
         const response = await updateUserService(userId, updateData);
         res.status(200).json({
             message: 'Successfully updated user',

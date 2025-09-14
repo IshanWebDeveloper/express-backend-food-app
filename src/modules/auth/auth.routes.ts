@@ -13,6 +13,6 @@ authRouter.post('/signup', signUpController);
 authRouter.post('/signin', signInController);
 authRouter.post('/signout', signOutController);
 authRouter.post('/refresh-token', refreshTokenController);
-authRouter.put('/edit-profile', updateUserController);
+authRouter.put('/edit-profile/:userId', updateUserController);
 
 export default authRouter;
