@@ -12,6 +12,7 @@ module.exports = {
             },
             name: { type: Sequelize.STRING, allowNull: false },
             description: { type: Sequelize.TEXT },
+            rating: { type: Sequelize.FLOAT, defaultValue: 0 },
             price: { type: Sequelize.FLOAT, allowNull: false },
             image_url: { type: Sequelize.STRING },
             category_id: {

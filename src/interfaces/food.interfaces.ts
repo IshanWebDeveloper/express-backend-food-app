@@ -4,6 +4,8 @@ export interface Food {
     price: number;
     categoryId: string;
     description?: string;
+    preparationTime: number;
+    rating: number;
     imageUrl?: string;
     createdAt?: Date;
     updatedAt?: Date;
