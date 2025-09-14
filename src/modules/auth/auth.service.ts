@@ -1,5 +1,9 @@
 import { User } from '@/interfaces/user.interfaces';
-import { validateSignIn, validateSignUp } from './auth.validator';
+import {
+    validateSignIn,
+    validateSignUp,
+    validateUpdateUser,
+} from './auth.validator';
 import repo from './auth.repo';
 import { compareSync, hash } from 'bcrypt';
 import {
@@ -31,7 +35,6 @@ export const signUpService = async (userData: User) => {
     );
     const username = `${userData.email.split('@')[0]}-${randomId}`;
     const hashedPassword = await hash(userData.password, 10);
-    console.log('userdata', userData);
     const newUserData = await repo.createUser({
         name: userData.name,
         email: userData.email,
@@ -110,6 +113,24 @@ export const signInService = async (userData: User) => {
         accessToken,
         refreshToken,
     };
+};
+
+export const updateUserService = async (
+    userId: string,
+    updateData: Partial<User>,
+) => {
+    const { error } = validateUpdateUser(updateData);
+    if (error) {
+        throw new CustomError(error.details[0].message, 400);
+    }
+
+    const user = await repo.findUserById(userId);
+    if (!user) {
+        throw new CustomError('User not found', 404);
+    }
+
+    await repo.updateUser(userId, updateData);
+    return { message: 'User updated successfully' };
 };
 
 export const refreshTokenService = async (token: string) => {

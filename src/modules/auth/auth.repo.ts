@@ -36,6 +36,12 @@ const repo = {
     createUser: async (userData: User): Promise<User> => {
         return await DB.Users.create(userData);
     },
+    updateUser: async (
+        userId: string,
+        updateData: Partial<User>,
+    ): Promise<[affectedCount: number]> => {
+        return await DB.Users.update(updateData, { where: { id: userId } });
+    },
 };
 
 export default repo;

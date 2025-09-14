@@ -54,6 +54,43 @@ export const validateSignUp = (userData: any) => {
     return schema.validate(userData, options);
 };
 
+export const validateUpdateUser = (updateData: any) => {
+    const schema = Joi.object({
+        email: Joi.string().email().optional().messages({
+            'string.email': 'Email format is invalid',
+        }),
+        name: Joi.string().min(1).optional().messages({
+            'string.min': 'Name should at least minimum 1 character',
+        }),
+        username: Joi.string().optional(),
+        password: Joi.string()
+            .min(8)
+            .pattern(
+                new RegExp(
+                    '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d]).+$',
+                ),
+            )
+            .optional()
+            .messages({
+                'string.min': 'Password must have at least 8 characters.',
+                'string.pattern.base':
+                    'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            }),
+        delivery_address: Joi.string().min(1).optional().messages({
+            'string.min':
+                'Delivery Address should at least minimum 1 character',
+        }),
+        phone_number: Joi.string()
+            .pattern(new RegExp('^[0-9]+$'))
+            .optional()
+            .messages({
+                'string.pattern.base': 'Phone number must contain only digits.',
+            }),
+    });
+
+    return schema.validate(updateData, options);
+};
+
 export const validateSignIn = (userData: any) => {
     const schema = Joi.object({
         email: Joi.string().email().required().messages({

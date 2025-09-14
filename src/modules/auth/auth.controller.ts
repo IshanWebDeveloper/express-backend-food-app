@@ -4,6 +4,7 @@ import {
     refreshTokenService,
     signInService,
     signUpService,
+    updateUserService,
 } from './auth.service';
 
 export const signUpController = async (
@@ -69,6 +70,24 @@ export const refreshTokenController = async (
         const response = await refreshTokenService(refreshToken);
         res.status(200).json({
             message: 'Successfully refreshed token',
+            data: response,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// update user details controller
+export const updateUserController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    try {
+        const { userId, updateData } = req.body;
+        const response = await updateUserService(userId, updateData);
+        res.status(200).json({
+            message: 'Successfully updated user',
             data: response,
         });
     } catch (error) {
