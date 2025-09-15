@@ -65,8 +65,8 @@ export const refreshTokenController = async (
     next: NextFunction,
 ): Promise<void> => {
     try {
-        const { refreshToken } = req.body;
-        const response = await refreshTokenService(refreshToken);
+        const { refresh_token } = req.body;
+        const response = await refreshTokenService(refresh_token);
         res.status(200).json({
             message: 'Successfully refreshed token',
             data: response,
