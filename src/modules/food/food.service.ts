@@ -26,10 +26,10 @@ export const getFoodService = async (params: any) => {
         throw new CustomError(error.details[0].message, 400);
     }
     const { foodId } = params;
-    if (!foodId || isNaN(Number(foodId))) {
+    if (!foodId) {
         throw new CustomError('Invalid or missing foodId parameter', 400);
     }
-    return await FoodRepo.findById(Number(foodId));
+    return await FoodRepo.findById(foodId);
 };
 
 export const updateFoodService = async (params: any) => {
@@ -38,10 +38,10 @@ export const updateFoodService = async (params: any) => {
         throw new CustomError(error.details[0].message, 400);
     }
     const { foodId, ...updateData } = params;
-    if (!foodId || isNaN(Number(foodId))) {
+    if (!foodId) {
         throw new CustomError('Invalid or missing foodId parameter', 400);
     }
-    return await FoodRepo.update(Number(foodId), updateData);
+    return await FoodRepo.update(foodId, updateData);
 };
 
 export const deleteFoodService = async (params: any) => {
@@ -50,8 +50,8 @@ export const deleteFoodService = async (params: any) => {
         throw new CustomError(error.details[0].message, 400);
     }
     const { foodId } = params;
-    if (!foodId || isNaN(Number(foodId))) {
+    if (!foodId) {
         throw new CustomError('Invalid or missing foodId parameter', 400);
     }
-    return await FoodRepo.delete(Number(foodId));
+    return await FoodRepo.delete(foodId);
 };

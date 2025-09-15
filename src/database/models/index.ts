@@ -33,8 +33,8 @@ const FavoritesFood = FavoritesFoodModel(sequelize);
 
 // Associations
 
-Category.hasMany(FoodProduct, { foreignKey: 'categoryId' });
-FoodProduct.belongsTo(Category, { foreignKey: 'categoryId' });
+Category.hasMany(FoodProduct, { foreignKey: 'category_id' });
+FoodProduct.belongsTo(Category, { foreignKey: 'category_id' });
 
 User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User, { foreignKey: 'userId' });

@@ -2,9 +2,9 @@ export interface Food {
     id?: string;
     name: string;
     price: number;
-    categoryId: string;
+    category_id: string;
     description?: string;
-    preparationTime: number;
+    preparation_time: number;
     rating: number;
     imageUrl?: string;
     createdAt?: Date;

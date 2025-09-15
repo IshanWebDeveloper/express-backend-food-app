@@ -10,9 +10,9 @@ const options = {
 
 export const validateGetCategory = (params: any) => {
     const schema = Joi.object({
-        categoryId: Joi.number().integer().required().messages({
+        categoryId: Joi.string().uuid().required().messages({
             'any.required': 'categoryId is required',
-            'number.base': 'categoryId must be a number',
+            'string.uuid': 'categoryId must be a valid UUID',
         }),
     });
     return schema.validate(params, options);
@@ -36,9 +36,9 @@ export const validateCreateCategory = (params: any) => {
 
 export const validateUpdateCategory = (params: any) => {
     const schema = Joi.object({
-        categoryId: Joi.number().integer().required().messages({
+        categoryId: Joi.string().uuid().required().messages({
             'any.required': 'categoryId is required',
-            'number.base': 'categoryId must be a number',
+            'string.uuid': 'categoryId must be a valid UUID',
         }),
         name: Joi.string().min(1).max(100).messages({
             'string.base': 'name must be a string',

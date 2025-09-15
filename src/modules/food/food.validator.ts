@@ -18,8 +18,9 @@ export const validateCreateFood = (foodData: any) => {
             'number.min': 'Price must be non-negative',
             'any.required': 'Price is required',
         }),
-        categoryId: Joi.number().required().messages({
+        category_id: Joi.string().uuid().required().messages({
             'any.required': 'Category ID is required',
+            'string.uuid': 'Category ID must be a valid UUID',
         }),
         description: Joi.string().optional(),
     });
@@ -28,8 +29,9 @@ export const validateCreateFood = (foodData: any) => {
 
 export const validateGetFood = (params: any) => {
     const schema = Joi.object({
-        foodId: Joi.number().required().messages({
+        foodId: Joi.string().uuid().required().messages({
             'any.required': 'Food ID is required',
+            'string.uuid': 'Food ID must be a valid UUID',
         }),
     });
     return schema.validate(params, options);
@@ -37,12 +39,13 @@ export const validateGetFood = (params: any) => {
 
 export const validateUpdateFood = (params: any) => {
     const schema = Joi.object({
-        foodId: Joi.number().required().messages({
+        foodId: Joi.string().uuid().required().messages({
             'any.required': 'Food ID is required',
+            'string.uuid': 'Food ID must be a valid UUID',
         }),
         name: Joi.string().min(1).optional(),
         price: Joi.number().min(0).optional(),
-        categoryId: Joi.number().optional(),
+        category_id: Joi.string().uuid().optional(),
         description: Joi.string().optional(),
     });
     return schema.validate(params, options);

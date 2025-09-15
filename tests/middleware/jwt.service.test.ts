@@ -1,5 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { generateJWT, verifyJWT } from '../../src/middlewares/jwt.service';
+import {
+    generateAccessToken,
+    verifyAccessToken,
+} from '../../src/middlewares/jwt.service';
 
 jest.mock('jsonwebtoken', () => ({
     sign: jest.fn(),
@@ -14,39 +17,39 @@ describe('JWT Service', () => {
         jest.clearAllMocks();
     });
 
-    test('generateJWT should return a valid token', async () => {
+    test('generateAccessToken should return a valid token', async () => {
         (jwt.sign as jest.Mock).mockReturnValue('mockedToken');
 
-        const token = await generateJWT(payload, secretKey);
+        const token = await generateAccessToken(payload, secretKey);
 
         expect(jwt.sign).toHaveBeenCalledWith(payload, secretKey);
         expect(token).toBe('Bearer mockedToken');
     });
 
-    test('verifyJWT should return the correct payload when token is valid', async () => {
+    test('verifyAccessToken should return the correct payload when token is valid', async () => {
         (jwt.verify as jest.Mock).mockReturnValue(payload);
 
-        const result = await verifyJWT('Bearer validToken', secretKey);
+        const result = await verifyAccessToken('Bearer validToken', secretKey);
 
         expect(jwt.verify).toHaveBeenCalledWith('validToken', secretKey);
         expect(result).toEqual(payload);
     });
 
-    test('verifyJWT should throw an error if token is invalid', async () => {
+    test('verifyAccessToken should throw an error if token is invalid', async () => {
         (jwt.verify as jest.Mock).mockImplementation(() => {
             throw new Error('Invalid token');
         });
 
-        await expect(verifyJWT('Bearer invalidToken', secretKey)).rejects.toThrow(
-            'Invalid token'
-        );
+        await expect(
+            verifyAccessToken('Bearer invalidToken', secretKey),
+        ).rejects.toThrow('Invalid token');
     });
 
-    test('verifyJWT should throw an error if payload is a string', async () => {
+    test('verifyAccessToken should throw an error if payload is a string', async () => {
         (jwt.verify as jest.Mock).mockReturnValue('InvalidPayload');
 
-        await expect(verifyJWT('Bearer validToken', secretKey)).rejects.toThrow(
-            'Invalid token payload'
-        );
+        await expect(
+            verifyAccessToken('Bearer validToken', secretKey),
+        ).rejects.toThrow('Invalid token payload');
     });
 });

@@ -1,6 +1,5 @@
 import logger from '@/utils/logger';
 import Sequelize from 'sequelize';
-import { FoodProduct } from './models';
 import {
     DB_DIALECT,
     DB_HOST,
@@ -11,6 +10,8 @@ import {
     NODE_ENV,
 } from '@/config';
 import userModel from './models/user.model';
+import favoritesFoodModel from './models/favoritesFood.model';
+import { FavoritesFood, FoodProduct } from './models';
 
 const sequelize = new Sequelize.Sequelize(
     DB_NAME as string,
@@ -44,6 +45,7 @@ sequelize.authenticate();
 export const DB = {
     Users: userModel(sequelize),
     Food: FoodProduct,
+    Favorites: FavoritesFood,
     sequelize, // connection instance (RAW queries)
     Sequelize, // library
 };

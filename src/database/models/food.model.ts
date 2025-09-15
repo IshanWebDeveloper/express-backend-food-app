@@ -4,15 +4,15 @@ interface FoodAttributes {
     id: string;
     name: string;
     description?: string;
-    preparationTime: number;
+    preparation_time: number;
     rating: number;
     price: number;
-    imageUrl?: string;
-    categoryId: string;
+    image_url?: string;
+    category_id: string;
 }
 
 interface FoodCreationAttributes
-    extends Optional<FoodAttributes, 'id' | 'description' | 'imageUrl'> {}
+    extends Optional<FoodAttributes, 'id' | 'description' | 'image_url'> {}
 
 class Food
     extends Model<FoodAttributes, FoodCreationAttributes>
@@ -21,11 +21,11 @@ class Food
     public id!: string;
     public name!: string;
     public description?: string;
-    public preparationTime!: number;
+    public preparation_time!: number;
     public rating!: number;
     public price!: number;
-    public imageUrl?: string;
-    public categoryId!: string;
+    public image_url?: string;
+    public category_id!: string;
 }
 
 export default function (sequelize: Sequelize): typeof Food {
@@ -38,11 +38,11 @@ export default function (sequelize: Sequelize): typeof Food {
             },
             name: { type: DataTypes.STRING, allowNull: false },
             description: { type: DataTypes.TEXT },
-            preparationTime: { type: DataTypes.INTEGER, allowNull: false },
+            preparation_time: { type: DataTypes.INTEGER, allowNull: false },
             rating: { type: DataTypes.FLOAT, allowNull: false },
             price: { type: DataTypes.FLOAT, allowNull: false },
-            imageUrl: { type: DataTypes.STRING },
-            categoryId: { type: DataTypes.UUID, allowNull: false },
+            image_url: { type: DataTypes.STRING },
+            category_id: { type: DataTypes.UUID, allowNull: false },
         },
         {
             tableName: 'food_products',
