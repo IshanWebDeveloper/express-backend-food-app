@@ -23,7 +23,7 @@ Adjust values as needed for your local setup. Use strong secrets in production.
 
 ## Overview
 
-Node.js Express backend for a food ordering application, using Sequelize ORM and a modular architecture.
+Node.js Express backend for a food ordering application, using Sequelize ORM with mysql and a modular architecture.
 
 ## Features
 
