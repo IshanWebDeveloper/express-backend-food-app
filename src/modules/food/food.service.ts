@@ -55,3 +55,9 @@ export const deleteFoodService = async (params: any) => {
     }
     return await FoodRepo.delete(foodId);
 };
+
+export const getProductPrices = async (ids: string[]) => {
+    return await FoodRepo.findAll().then(foods =>
+        foods.filter(food => food.id !== undefined && ids.includes(food.id)),
+    );
+};
