@@ -2,10 +2,10 @@ import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 
 interface FavoritesFoodAttributes {
     id: string;
-    userId: string;
-    foodId: string;
-    createdAt?: Date;
-    updatedAt?: Date;
+    user_id: string;
+    food_id: string;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 interface FavoritesFoodCreationAttributes
@@ -16,10 +16,10 @@ class FavoritesFood
     implements FavoritesFoodAttributes
 {
     public id!: string;
-    public userId!: string;
-    public foodId!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    public user_id!: string;
+    public food_id!: string;
+    public readonly created_at!: Date;
+    public readonly updated_at!: Date;
 }
 
 export default function (sequelize: Sequelize): typeof FavoritesFood {
@@ -30,14 +30,14 @@ export default function (sequelize: Sequelize): typeof FavoritesFood {
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
             },
-            userId: { type: DataTypes.UUID, allowNull: false },
-            foodId: { type: DataTypes.UUID, allowNull: false },
-            createdAt: {
+            user_id: { type: DataTypes.UUID, allowNull: false },
+            food_id: { type: DataTypes.UUID, allowNull: false },
+            created_at: {
                 allowNull: false,
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
@@ -45,8 +45,10 @@ export default function (sequelize: Sequelize): typeof FavoritesFood {
         },
         {
             tableName: 'favorites_food',
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
             sequelize,
-            timestamps: false,
+            timestamps: true,
         },
     );
     return FavoritesFood;

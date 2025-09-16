@@ -10,7 +10,6 @@ import {
     NODE_ENV,
 } from '@/config';
 import userModel from './models/user.model';
-import favoritesFoodModel from './models/favoritesFood.model';
 import { FavoritesFood, FoodProduct } from './models';
 
 const sequelize = new Sequelize.Sequelize(

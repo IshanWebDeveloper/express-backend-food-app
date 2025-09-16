@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { Sequelize } from 'sequelize';
 import {
     DB_HOST,
     DB_PORT,
@@ -12,7 +12,6 @@ import CategoryModel from './category.model';
 import FoodProductModel from './food.model';
 import OrderModel from './order.model';
 import OrderItemModel from './orderItem.model';
-import CartModel from './cart.model';
 import CartItemModel from './cartItem.model';
 import FavoritesFoodModel from './favoritesFood.model';
 const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
@@ -27,7 +26,6 @@ const Category = CategoryModel(sequelize);
 const FoodProduct = FoodProductModel(sequelize);
 const Order = OrderModel(sequelize);
 const OrderItem = OrderItemModel(sequelize);
-const Cart = CartModel(sequelize);
 const CartItem = CartItemModel(sequelize);
 const FavoritesFood = FavoritesFoodModel(sequelize);
 
@@ -39,20 +37,14 @@ FoodProduct.belongsTo(Category, { foreignKey: 'category_id' });
 User.hasMany(Order, { foreignKey: 'userId' });
 Order.belongsTo(User, { foreignKey: 'userId' });
 
-FavoritesFood.belongsTo(User, { foreignKey: 'userId' });
-FavoritesFood.belongsTo(FoodProduct, { foreignKey: 'foodId' });
+FavoritesFood.belongsTo(User, { foreignKey: 'user_id' });
+FavoritesFood.belongsTo(FoodProduct, { foreignKey: 'food_id' });
 
 Order.belongsToMany(FoodProduct, { through: OrderItem, foreignKey: 'orderId' });
 FoodProduct.belongsToMany(Order, {
     through: OrderItem,
     foreignKey: 'productId',
 });
-
-User.hasOne(Cart, { foreignKey: 'userId' });
-Cart.belongsTo(User, { foreignKey: 'userId' });
-
-Cart.belongsToMany(FoodProduct, { through: CartItem, foreignKey: 'cartId' });
-FoodProduct.belongsToMany(Cart, { through: CartItem, foreignKey: 'productId' });
 
 export {
     sequelize,
@@ -61,7 +53,6 @@ export {
     FoodProduct,
     Order,
     OrderItem,
-    Cart,
     CartItem,
     FavoritesFood,
 };
