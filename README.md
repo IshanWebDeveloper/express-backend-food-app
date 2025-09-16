@@ -30,7 +30,6 @@ Node.js Express backend for a food ordering application, using Sequelize ORM and
 -   User authentication (JWT)
 -   Food catalog CRUD
 -   Orders and order items
--   Cart and cart items
 -   Favorites (user favorite foods)
 -   Category management
 -   OpenAPI (Swagger) docs
@@ -75,7 +74,6 @@ Node.js Express backend for a food ordering application, using Sequelize ORM and
 -   User: `/api/user/`
 -   Food: `/api/food/`
 -   Order: `/api/order/`
--   Cart: `/api/cart/`
 -   Category: `/api/category/`
 
 ## Patterns & Conventions
