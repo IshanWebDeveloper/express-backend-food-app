@@ -1,0 +1,35 @@
+# [GET] Get Orders
+/orders:
+    get:
+        tags:
+            - Order
+        summary: Get all orders for user
+        responses:
+            200:
+                description: 'List of orders'
+            401:
+                description: 'Unauthorized'
+            500:
+                description: 'Internal server error'
+        security:
+            - bearerAuth: []
+
+# [POST] Create Order
+/orders/create:
+    post:
+        tags:
+            - Order
+        summary: Create a new order
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Order'
+        responses:
+            201:
+                description: 'Order created'
+            400:
+                description: 'Bad Request'
+            500:
+                description: 'Internal server error'

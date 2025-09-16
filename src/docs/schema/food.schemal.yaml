@@ -1,0 +1,29 @@
+components:
+    schemas:
+        Food:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                name:
+                    type: string
+                price:
+                    type: number
+                category_id:
+                    type: string
+                    format: uuid
+                description:
+                    type: string
+                preparation_time:
+                    type: integer
+                rating:
+                    type: number
+                imageUrl:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time

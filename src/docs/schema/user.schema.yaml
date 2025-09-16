@@ -1,0 +1,33 @@
+components:
+    schemas:
+        User:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                email:
+                    type: string
+                    example: user@example.com
+                name:
+                    type: string
+                    example: John Doe
+                username:
+                    type: string
+                    example: johndoe-abc123
+                password:
+                    type: string
+                delivery_address:
+                    type: string
+                    example: 123 Main St
+                phone_number:
+                    type: string
+                    example: '1234567890'
+                refresh_token:
+                    type: string
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time

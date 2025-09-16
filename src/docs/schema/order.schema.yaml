@@ -1,0 +1,41 @@
+components:
+    schemas:
+        Order:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                userId:
+                    type: string
+                    format: uuid
+                totalAmount:
+                    type: number
+                status:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/OrderItem'
+        OrderItem:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                orderId:
+                    type: string
+                    format: uuid
+                productId:
+                    type: string
+                    format: uuid
+                quantity:
+                    type: integer
+                price:
+                    type: number

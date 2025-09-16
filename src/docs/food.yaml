@@ -1,0 +1,31 @@
+# [GET] Get All Foods
+/foods:
+    get:
+        tags:
+            - Food
+        summary: Get all food items
+        responses:
+            200:
+                description: 'List of foods'
+            500:
+                description: 'Internal server error'
+
+# [POST] Create Food
+/foods/create:
+    post:
+        tags:
+            - Food
+        summary: Create a new food item
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Food'
+        responses:
+            201:
+                description: 'Food created'
+            400:
+                description: 'Bad Request'
+            500:
+                description: 'Internal server error'
