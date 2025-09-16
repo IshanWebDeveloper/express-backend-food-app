@@ -1,6 +1,6 @@
+import { verifyAccessToken } from '@/middlewares/jwt.service';
 import { repo } from './user.repo';
 import { CustomError } from '@/utils/custom-error';
-import { verifyAccessToken } from '@/middlewares/jwt.service';
 import { JWT_ACCESS_TOKEN_SECRET } from '@/config';
 
 export const getUserProfileService = async (accessToken: string) => {
@@ -32,4 +32,49 @@ export const getUserFavoriteFoodsService = async (accessToken: string) => {
     }
 
     return favoriteFoods;
+};
+
+export const addUserFavoriteFoodService = async (
+    accessToken: string,
+    foodId: number,
+) => {
+    const decodeToken = await verifyAccessToken(
+        accessToken,
+        JWT_ACCESS_TOKEN_SECRET as string,
+    );
+    const userId = decodeToken.userId;
+    const food = await repo.getFoodById(foodId);
+    if (!food) {
+        throw new CustomError('Food not found', 404);
+    }
+
+    await repo.addUserFavoriteFood(userId, foodId);
+    return food;
+};
+
+export const removeUserFavoriteFoodService = async (
+    accessToken: string,
+    foodId: number,
+) => {
+    const decodeToken = await verifyAccessToken(
+        accessToken,
+        JWT_ACCESS_TOKEN_SECRET as string,
+    );
+    const userId = decodeToken.userId;
+
+    await repo.removeUserFavoriteFood(userId, foodId);
+    return foodId;
+};
+
+export const isFoodFavoriteService = async (
+    accessToken: string,
+    foodId: number,
+) => {
+    const decodeToken = await verifyAccessToken(
+        accessToken,
+        JWT_ACCESS_TOKEN_SECRET as string,
+    );
+    const userId = decodeToken.userId;
+
+    return await repo.isFoodFavorite(userId, foodId);
 };
