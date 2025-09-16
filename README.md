@@ -1,3 +1,24 @@
+## Environment Variables
+
+Create a `.env.development` file in the project root with the following structure:
+
+```env
+PORT=5000
+NODE_ENV=development
+
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=
+DB_NAME=foodapp
+DB_HOST=127.0.0.1
+DB_DIALECT=mysql
+
+JWT_ACCESS_TOKEN_SECRET=your-access-token-secret
+JWT_REFRESH_TOKEN_SECRET=your-refresh-token-secret
+```
+
+Adjust values as needed for your local setup. Use strong secrets in production.
+
 # Express Backend Food App
 
 ## Overview
