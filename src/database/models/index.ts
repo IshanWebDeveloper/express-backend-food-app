@@ -12,7 +12,6 @@ import CategoryModel from './category.model';
 import FoodProductModel from './food.model';
 import OrderModel from './order.model';
 import OrderItemModel from './orderItem.model';
-import CartItemModel from './cartItem.model';
 import FavoritesFoodModel from './favoritesFood.model';
 const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
     host: DB_HOST,
@@ -26,7 +25,6 @@ const Category = CategoryModel(sequelize);
 const FoodProduct = FoodProductModel(sequelize);
 const Order = OrderModel(sequelize);
 const OrderItem = OrderItemModel(sequelize);
-const CartItem = CartItemModel(sequelize);
 const FavoritesFood = FavoritesFoodModel(sequelize);
 
 // Associations
@@ -53,6 +51,5 @@ export {
     FoodProduct,
     Order,
     OrderItem,
-    CartItem,
     FavoritesFood,
 };
