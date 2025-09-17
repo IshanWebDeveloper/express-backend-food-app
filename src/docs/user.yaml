@@ -15,7 +15,7 @@
                                 message:
                                     type: string
                                 data:
-                                    $ref: '#/components/schemas/User'
+                                    $ref: '#/components/schemas/PublicUser'
             404:
                 description: 'User not found'
             401:

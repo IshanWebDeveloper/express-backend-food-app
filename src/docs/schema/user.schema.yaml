@@ -27,6 +27,29 @@ components:
                     type: string
                     format: date-time
 
+        PublicUser:
+            type: object
+            properties:
+                id:
+                    type: string
+                    format: uuid
+                email:
+                    type: string
+                name:
+                    type: string
+                username:
+                    type: string
+                delivery_address:
+                    type: string
+                phone_number:
+                    type: string
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
         FavoriteFoodRequest:
             type: object
             required:

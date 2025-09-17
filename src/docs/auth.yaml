@@ -14,6 +14,10 @@
         responses:
             201:
                 description: 'Successfully signed up'
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthSuccessResponse'
             400:
                 description: 'Bad Request'
             409:
@@ -38,6 +42,10 @@
         responses:
             200:
                 description: 'Successfully signed in'
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthSuccessResponse'
             400:
                 description: 'Bad Request'
             401:

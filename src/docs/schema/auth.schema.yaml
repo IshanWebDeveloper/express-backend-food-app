@@ -6,6 +6,8 @@ components:
                 - name
                 - email
                 - password
+                - delivery_address
+                - phone_number
             properties:
                 name:
                     type: string
@@ -16,6 +18,15 @@ components:
                 password:
                     type: string
                     example: password
+                delivery_address:
+                    type: string
+                    example: 123 Main St, Springfield
+                phone_number:
+                    type: string
+                    example: 5551234567
+                username:
+                    type: string
+                    description: Optional. If omitted, the system will generate one.
 
         RefreshTokenRequest:
             type: object
@@ -63,3 +74,19 @@ components:
                 password:
                     type: string
                     example: password
+
+        AuthSuccessResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: Successfully signed in
+                data:
+                    type: object
+                    properties:
+                        user:
+                            $ref: '#/components/schemas/PublicUser'
+                        accessToken:
+                            type: string
+                        refreshToken:
+                            type: string
