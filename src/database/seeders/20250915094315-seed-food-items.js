@@ -14,7 +14,7 @@ module.exports = {
                 price: 8.24,
                 image_url:
                     '../assets/images/foods/cheeseburger_wendy_burger.png',
-                category_id: '53db3596-17df-4fb1-8bc6-bc0c30ae0e5f', // Replace with valid category ID
+                category_id: '386d25f0-e13d-45ef-ae5a-3f332ffc74e2', // Replace with valid category ID
             },
             {
                 id: uuidv4(),
@@ -25,7 +25,7 @@ module.exports = {
                 rating: 4.6,
                 price: 12.48,
                 image_url: '../assets/images/foods/hamburger_veggie_burger.png',
-                category_id: 'ec41c59d-bc54-4764-8fba-4c48e47dd888', // Replace with valid category ID
+                category_id: '8006aec1-df1c-45c9-9a9e-8e8cf12b89d3', // Replace with valid category ID
             },
             {
                 id: uuidv4(),
@@ -37,7 +37,7 @@ module.exports = {
                 price: 12.48,
                 image_url:
                     '../assets/images/foods/hamburger_chicken_burger.png',
-                category_id: 'bb3ea967-8aab-4dd3-b211-7e8797498db2', // Replace with valid category ID
+                category_id: '68fd9486-7916-4ca8-bdee-e4a7036a5fd0', // Replace with valid category ID
             },
             {
                 id: uuidv4(),
@@ -48,7 +48,7 @@ module.exports = {
                 rating: 4.5,
                 price: 26.99,
                 image_url: '../assets/images/foods/fried_chicken_burger.png',
-                category_id: 'bb3ea967-8aab-4dd3-b211-7e8797498db2', // Replace with valid category ID
+                category_id: '68fd9486-7916-4ca8-bdee-e4a7036a5fd0', // Replace with valid category ID
             },
         ]);
     },
