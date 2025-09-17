@@ -6,17 +6,17 @@ components:
                 id:
                     type: string
                     format: uuid
-                userId:
+                user_id:
                     type: string
                     format: uuid
-                totalAmount:
+                total_amount:
                     type: number
                 status:
                     type: string
-                createdAt:
+                created_at:
                     type: string
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     format: date-time
                 items:
@@ -29,13 +29,34 @@ components:
                 id:
                     type: string
                     format: uuid
-                orderId:
+                order_id:
                     type: string
                     format: uuid
-                productId:
+                product_id:
                     type: string
                     format: uuid
                 quantity:
                     type: integer
                 price:
                     type: number
+
+        CreateOrderRequest:
+            type: object
+            required:
+                - items
+            properties:
+                items:
+                    type: array
+                    minItems: 1
+                    items:
+                        type: object
+                        required:
+                            - productId
+                            - quantity
+                        properties:
+                            productId:
+                                type: string
+                                format: uuid
+                            quantity:
+                                type: integer
+                                minimum: 1

@@ -19,11 +19,43 @@ components:
                     type: integer
                 rating:
                     type: number
-                imageUrl:
+                image_url:
                     type: string
-                createdAt:
-                    type: string
-                    format: date-time
-                updatedAt:
+                created_at:
                     type: string
                     format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+
+        CreateFoodRequest:
+            type: object
+            required:
+                - name
+                - price
+                - category_id
+            properties:
+                name:
+                    type: string
+                price:
+                    type: number
+                    minimum: 0
+                category_id:
+                    type: string
+                    format: uuid
+                description:
+                    type: string
+
+        UpdateFoodRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                price:
+                    type: number
+                    minimum: 0
+                category_id:
+                    type: string
+                    format: uuid
+                description:
+                    type: string

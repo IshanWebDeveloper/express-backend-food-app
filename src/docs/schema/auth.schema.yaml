@@ -1,21 +1,55 @@
-components: 
+components:
     schemas:
         signup:
             type: object
-            required: 
+            required:
                 - name
                 - email
                 - password
-            properties: 
-                name: 
+            properties:
+                name:
                     type: string
-                    example: Full Name                    
+                    example: Full Name
                 email:
                     type: string
                     example: email@example.com
                 password:
                     type: string
                     example: password
+
+        RefreshTokenRequest:
+            type: object
+            required:
+                - refresh_token
+            properties:
+                refresh_token:
+                    type: string
+                    example: eyJhbGciOi...
+
+        SignOutRequest:
+            type: object
+            required:
+                - userId
+            properties:
+                userId:
+                    type: string
+                    format: uuid
+
+        UpdateUserRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+                name:
+                    type: string
+                username:
+                    type: string
+                password:
+                    type: string
+                delivery_address:
+                    type: string
+                phone_number:
+                    type: string
 
         signin:
             type: object

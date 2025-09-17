@@ -1,22 +1,139 @@
-# [GET] Get User Profile
+## User routes
 /user/profile:
     get:
-        tags: 
+        tags:
             - User
         summary: Get user profile by decoded ID from token
-        responses: 
+        responses:
+            200:
+                description: 'User data fetched'
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                data:
+                                    $ref: '#/components/schemas/User'
             404:
-                descriptiom: 'User not found'
+                description: 'User not found'
             401:
                 description: 'Unauthorized'
-            500: 
+            500:
                 description: 'Internal server error'
         security:
             - bearerAuth: []
 
-securityDefinitions:
-    bearerAuth:
-        type: apiKey
-        name: Authorization
-        in: header
-        description: 'JWT Bearer token for authorization. Example: "Bearer {token}"'
+/user/favorites:
+    get:
+        tags:
+            - User
+        summary: Get user favorite foods
+        responses:
+            200:
+                description: 'User favorite foods fetched'
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                data:
+                                    type: array
+                                    items:
+                                        $ref: '#/components/schemas/Food'
+            404:
+                description: 'User not found'
+            401:
+                description: 'Unauthorized'
+            500:
+                description: 'Internal server error'
+        security:
+            - bearerAuth: []
+    post:
+        tags:
+            - User
+        summary: Add a food to favorites
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/FavoriteFoodRequest'
+        responses:
+            201:
+                description: 'User favorite food added'
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                data:
+                                    $ref: '#/components/schemas/Food'
+            400:
+                description: 'Bad Request'
+            404:
+                description: 'User or food not found'
+            401:
+                description: 'Unauthorized'
+            500:
+                description: 'Internal server error'
+        security:
+            - bearerAuth: []
+
+/user/favorites/remove:
+    post:
+        tags:
+            - User
+        summary: Remove a food from favorites
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/FavoriteFoodRequest'
+        responses:
+            200:
+                description: 'User favorite food removed'
+            404:
+                description: 'User or favorite not found'
+            401:
+                description: 'Unauthorized'
+            500:
+                description: 'Internal server error'
+        security:
+            - bearerAuth: []
+
+/user/favorites/is-favorite:
+    post:
+        tags:
+            - User
+        summary: Check if a food is in user's favorites
+        requestBody:
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/FavoriteFoodRequest'
+        responses:
+            200:
+                description: 'User favorite food status fetched'
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+                                data:
+                                    type: boolean
+            401:
+                description: 'Unauthorized'
+            500:
+                description: 'Internal server error'
+        security:
+            - bearerAuth: []

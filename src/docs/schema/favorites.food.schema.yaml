@@ -6,15 +6,15 @@ components:
                 id:
                     type: string
                     format: uuid
-                userId:
+                user_id:
                     type: string
                     format: uuid
-                foodId:
+                food_id:
                     type: string
                     format: uuid
-                createdAt:
+                created_at:
                     type: string
                     format: date-time
-                updatedAt:
+                updated_at:
                     type: string
                     format: date-time
