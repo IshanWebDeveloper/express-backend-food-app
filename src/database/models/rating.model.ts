@@ -3,7 +3,7 @@ import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 interface RatingAttributes {
     id: string;
     user_id: string;
-    food_id?: string | null;
+    dish_id?: string | null;
     restaurant_id?: string | null;
     score: number; // 0.0 - 5.0
     review?: string | null;
@@ -13,7 +13,7 @@ interface RatingAttributes {
 
 type RatingCreationAttributes = Optional<
     RatingAttributes,
-    'id' | 'food_id' | 'restaurant_id' | 'review' | 'created_at' | 'updated_at'
+    'id' | 'dish_id' | 'restaurant_id' | 'review' | 'created_at' | 'updated_at'
 >;
 
 class Rating
@@ -22,7 +22,7 @@ class Rating
 {
     public id!: string;
     public user_id!: string;
-    public food_id?: string | null;
+    public dish_id?: string | null;
     public restaurant_id?: string | null;
     public score!: number;
     public review?: string | null;
@@ -42,7 +42,7 @@ export default function (sequelize: Sequelize): typeof Rating {
                 type: DataTypes.UUID,
                 allowNull: false,
             },
-            food_id: {
+            dish_id: {
                 type: DataTypes.UUID,
                 allowNull: true,
             },

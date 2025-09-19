@@ -27,6 +27,7 @@ export default function (sequelize: Sequelize): typeof Category {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                unique: true,
             },
         },
         {

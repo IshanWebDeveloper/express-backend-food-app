@@ -9,12 +9,12 @@ export enum OrderStatus {
 }
 interface OrderAttributes {
     id: string;
-    userId: string;
-    totalAmount: number;
+    user_id: string;
+    total_amount: number;
     status: OrderStatus;
-    placedAt: Date | null;
-    createdAt?: Date;
-    updatedAt?: Date;
+    placed_at: Date | null;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 interface OrderCreationAttributes extends Optional<OrderAttributes, 'id'> {}
@@ -24,12 +24,12 @@ class Order
     implements OrderAttributes
 {
     public id!: string;
-    public userId!: string;
-    public totalAmount!: number;
+    public user_id!: string;
+    public total_amount!: number;
     public status!: OrderStatus;
-    public placedAt!: Date | null;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    public placed_at!: Date | null;
+    public readonly created_at!: Date;
+    public readonly updated_at!: Date;
 }
 
 export default function (sequelize: Sequelize): typeof Order {
@@ -40,11 +40,11 @@ export default function (sequelize: Sequelize): typeof Order {
                 type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
-            userId: {
+            user_id: {
                 allowNull: false,
                 type: DataTypes.UUID,
             },
-            totalAmount: {
+            total_amount: {
                 allowNull: false,
                 type: DataTypes.DECIMAL(10, 2),
             },
@@ -59,17 +59,17 @@ export default function (sequelize: Sequelize): typeof Order {
                 ),
                 defaultValue: 'pending',
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
             },
-            placedAt: {
+            placed_at: {
                 allowNull: true,
                 type: DataTypes.DATE,
                 defaultValue: null,
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,

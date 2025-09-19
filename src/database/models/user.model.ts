@@ -12,9 +12,10 @@ export class UserModel
     public name!: string;
     public username!: string;
     public password!: string;
-    public refresh_token_id?: string;
     public is_Social_login!: boolean;
     public Social_login_provider?: string;
+    // Deprecated column from previous design; not used as FK anymore
+    public refresh_token_id?: string;
     public delivery_address!: string;
     public phone_number!: string;
     public created_at: string | undefined;
@@ -56,22 +57,22 @@ export default function (sequelize: Sequelize): typeof UserModel {
             is_Social_login: {
                 allowNull: false,
                 type: DataTypes.BOOLEAN,
+                field: 'is_social_login',
             },
             Social_login_provider: {
                 allowNull: true,
                 type: DataTypes.STRING,
+                field: 'social_login_provider',
             },
             phone_number: {
                 allowNull: false,
                 type: DataTypes.STRING,
             },
+            // Keep column if already exists in DB, but do not enforce FK that caused sync errors
             refresh_token_id: {
                 allowNull: true,
                 type: DataTypes.TEXT,
                 field: 'refresh_token_id',
-                references: { model: 'RefreshTokens', key: 'id' },
-                onDelete: 'SET NULL',
-                onUpdate: 'CASCADE',
             },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,

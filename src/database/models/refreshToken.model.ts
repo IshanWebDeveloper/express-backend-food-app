@@ -2,17 +2,17 @@ import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
 export interface RefreshTokenAttributes {
     id: number;
-    userId: number;
+    user_id: string; // FK to users.id (UUID)
     token: string;
-    expiresAt: Date;
-    createdAt?: Date;
-    updatedAt?: Date;
+    expires_at: Date;
+    created_at?: Date;
+    updated_at?: Date;
 }
 
 export interface RefreshTokenCreationAttributes
     extends Optional<
         RefreshTokenAttributes,
-        'id' | 'createdAt' | 'updatedAt'
+        'id' | 'created_at' | 'updated_at'
     > {}
 
 export class RefreshToken
@@ -20,11 +20,11 @@ export class RefreshToken
     implements RefreshTokenAttributes
 {
     public id!: number;
-    public userId!: number;
+    public user_id!: string;
     public token!: string;
-    public expiresAt!: Date;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    public expires_at!: Date;
+    public readonly created_at!: Date;
+    public readonly updated_at!: Date;
 }
 
 export default (sequelize: Sequelize) => {
@@ -35,30 +35,31 @@ export default (sequelize: Sequelize) => {
                 autoIncrement: true,
                 primaryKey: true,
             },
-            userId: {
-                type: DataTypes.INTEGER.UNSIGNED,
+            user_id: {
+                type: DataTypes.UUID,
                 allowNull: false,
                 references: {
-                    model: 'Users',
+                    model: 'users',
                     key: 'id',
                 },
                 onDelete: 'CASCADE',
+                onUpdate: 'CASCADE',
             },
             token: {
                 type: DataTypes.STRING,
                 allowNull: false,
                 unique: true,
             },
-            expiresAt: {
+            expires_at: {
                 type: DataTypes.DATE,
                 allowNull: false,
             },
-            createdAt: {
+            created_at: {
                 type: DataTypes.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
             },
-            updatedAt: {
+            updated_at: {
                 type: DataTypes.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -66,16 +67,18 @@ export default (sequelize: Sequelize) => {
         },
         {
             sequelize,
-            tableName: 'RefreshTokens',
+            tableName: 'refresh_tokens',
             modelName: 'RefreshToken',
             timestamps: true,
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
             indexes: [
                 {
                     unique: true,
                     fields: ['token'],
                 },
                 {
-                    fields: ['userId'],
+                    fields: ['user_id'],
                 },
             ],
         },
