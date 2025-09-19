@@ -12,7 +12,9 @@ export class UserModel
     public name!: string;
     public username!: string;
     public password!: string;
-    public refresh_token?: string;
+    public refresh_token_id?: string;
+    public is_Social_login!: boolean;
+    public Social_login_provider?: string;
     public delivery_address!: string;
     public phone_number!: string;
     public created_at: string | undefined;
@@ -51,13 +53,25 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 allowNull: false,
                 type: DataTypes.STRING,
             },
+            is_Social_login: {
+                allowNull: false,
+                type: DataTypes.BOOLEAN,
+            },
+            Social_login_provider: {
+                allowNull: true,
+                type: DataTypes.STRING,
+            },
             phone_number: {
                 allowNull: false,
                 type: DataTypes.STRING,
             },
-            refresh_token: {
+            refresh_token_id: {
                 allowNull: true,
                 type: DataTypes.TEXT,
+                field: 'refresh_token_id',
+                references: { model: 'RefreshTokens', key: 'id' },
+                onDelete: 'SET NULL',
+                onUpdate: 'CASCADE',
             },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,

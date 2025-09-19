@@ -1,5 +1,3 @@
-// Routes for Food
-import { authMiddleware } from '@/middlewares/auth.middleware';
 import { Router } from 'express';
 import {
     createFoodController,
@@ -10,9 +8,9 @@ import {
 } from './food.controller';
 const foodRouter = Router();
 // Define food routes here
-foodRouter.get('/', authMiddleware, getAllFoodController);
-foodRouter.post('/create', authMiddleware, createFoodController);
-foodRouter.get('/:foodId', authMiddleware, getFoodController);
-foodRouter.put('/:foodId', authMiddleware, updateFoodController);
-foodRouter.delete('/:foodId', authMiddleware, deleteFoodController);
+foodRouter.get('/', getAllFoodController);
+foodRouter.post('/create', createFoodController);
+foodRouter.get('/:foodId', getFoodController);
+foodRouter.put('/:foodId', updateFoodController);
+foodRouter.delete('/:foodId', deleteFoodController);
 export default foodRouter;

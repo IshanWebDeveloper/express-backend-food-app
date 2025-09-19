@@ -3,11 +3,10 @@ import {
     getAllOrdersController,
     createOrderController,
 } from './order.controller';
-import { authMiddleware } from '@/middlewares/auth.middleware';
 
 const router = Router();
 
-router.get('/', authMiddleware, getAllOrdersController);
-router.post('/create', authMiddleware, createOrderController);
+router.get('/', getAllOrdersController);
+router.post('/create', createOrderController);
 
 export default router;

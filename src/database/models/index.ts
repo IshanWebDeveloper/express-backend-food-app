@@ -9,10 +9,12 @@ import {
 } from '../../config';
 import UserModel from './user.model';
 import CategoryModel from './category.model';
-import FoodProductModel from './food.model';
 import OrderModel from './order.model';
 import OrderItemModel from './orderItem.model';
-import FavoritesFoodModel from './favoritesFood.model';
+import DishModel from './dish.model';
+import RatingModel from './rating.model';
+import RestaturantModel from './restaurant.model';
+import RefreshTokenModel from './refreshToken.model';
 const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
     host: DB_HOST,
     port: DB_PORT ? Number(DB_PORT) : undefined,
@@ -22,34 +24,52 @@ const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
 // Initialize models
 const User = UserModel(sequelize);
 const Category = CategoryModel(sequelize);
-const FoodProduct = FoodProductModel(sequelize);
+const Dish = DishModel(sequelize);
 const Order = OrderModel(sequelize);
 const OrderItem = OrderItemModel(sequelize);
-const FavoritesFood = FavoritesFoodModel(sequelize);
+const Rating = RatingModel(sequelize);
+const Restaurant = RestaturantModel(sequelize);
+const RefreshToken = RefreshTokenModel(sequelize);
 
 // Associations
 
-Category.hasMany(FoodProduct, { foreignKey: 'category_id' });
-FoodProduct.belongsTo(Category, { foreignKey: 'category_id' });
+Category.hasMany(Dish, { foreignKey: 'category_id' });
+Dish.belongsTo(Category, { foreignKey: 'category_id' });
 
-User.hasMany(Order, { foreignKey: 'userId' });
-Order.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Order, { foreignKey: 'user_id' });
+Order.belongsTo(User, { foreignKey: 'user_id' });
 
-FavoritesFood.belongsTo(User, { foreignKey: 'user_id' });
-FavoritesFood.belongsTo(FoodProduct, { foreignKey: 'food_id' });
+Order.belongsToMany(Dish, { through: OrderItem, foreignKey: 'order_id' });
 
-Order.belongsToMany(FoodProduct, { through: OrderItem, foreignKey: 'orderId' });
-FoodProduct.belongsToMany(Order, {
-    through: OrderItem,
-    foreignKey: 'productId',
+Dish.belongsTo(Restaurant, { foreignKey: 'restaurant_id' });
+Restaurant.hasMany(Dish, { foreignKey: 'restaurant_id' });
+
+Dish.belongsTo(Category, { foreignKey: 'category_id' });
+Category.hasMany(Dish, { foreignKey: 'category_id' });
+
+User.hasMany(Rating, { foreignKey: 'user_id' });
+Rating.belongsTo(User, { foreignKey: 'user_id' });
+
+Dish.hasMany(Rating, { foreignKey: 'dish_id' });
+Rating.belongsTo(Dish, { foreignKey: 'dish_id' });
+
+User.belongsTo(RefreshToken, {
+    foreignKey: 'refresh_token_id',
+    as: 'refreshToken',
+});
+RefreshToken.hasOne(User, {
+    foreignKey: 'refresh_token_id',
+    as: 'user',
 });
 
 export {
     sequelize,
     User,
     Category,
-    FoodProduct,
     Order,
     OrderItem,
-    FavoritesFood,
+    Dish,
+    Rating,
+    Restaurant,
+    RefreshToken,
 };

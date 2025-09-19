@@ -1,9 +1,18 @@
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+
+export enum OrderStatus {
+    PENDING = 'pending',
+    CONFIRMED = 'confirmed',
+    PREPARING = 'preparing',
+    DELIVERED = 'delivered',
+    CANCELLED = 'cancelled',
+}
 interface OrderAttributes {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     totalAmount: number;
-    status: string;
+    status: OrderStatus;
+    placedAt: Date | null;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -14,10 +23,11 @@ class Order
     extends Model<OrderAttributes, OrderCreationAttributes>
     implements OrderAttributes
 {
-    public id!: number;
-    public userId!: number;
+    public id!: string;
+    public userId!: string;
     public totalAmount!: number;
-    public status!: string;
+    public status!: OrderStatus;
+    public placedAt!: Date | null;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
@@ -36,17 +46,28 @@ export default function (sequelize: Sequelize): typeof Order {
             },
             totalAmount: {
                 allowNull: false,
-                type: DataTypes.FLOAT,
+                type: DataTypes.DECIMAL(10, 2),
             },
             status: {
                 allowNull: false,
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM(
+                    'pending',
+                    'confirmed',
+                    'preparing',
+                    'delivered',
+                    'cancelled',
+                ),
                 defaultValue: 'pending',
             },
             createdAt: {
                 allowNull: false,
                 type: DataTypes.DATE,
                 defaultValue: DataTypes.NOW,
+            },
+            placedAt: {
+                allowNull: true,
+                type: DataTypes.DATE,
+                defaultValue: null,
             },
             updatedAt: {
                 allowNull: false,

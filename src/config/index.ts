@@ -18,4 +18,7 @@ export const {
     DB_NAME,
     DB_HOST,
     DB_DIALECT,
+    DB_SYNC,
+    DB_SYNC_ALTER,
+    DB_SYNC_FORCE,
 } = process.env;
