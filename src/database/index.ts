@@ -12,17 +12,7 @@ import {
     DB_USERNAME,
     NODE_ENV,
 } from '@/config';
-import userModel from './models/user.model';
-import {
-    Category,
-    Dish,
-    Order,
-    OrderItem,
-    Rating,
-    RefreshToken,
-    Restaurant,
-    User,
-} from './models';
+import { initModels, Models } from './models';
 
 const sequelize = new Sequelize.Sequelize(
     DB_NAME as string,
@@ -55,8 +45,6 @@ sequelize.authenticate();
 
 export async function syncDatabase() {
     try {
-        await sequelize.authenticate();
-
         const shouldSync = DB_SYNC || NODE_ENV === 'development';
         if (!shouldSync) {
             logger.info(
@@ -77,23 +65,61 @@ export async function syncDatabase() {
                 syncOptions,
             )}`,
         );
-        await sequelize.sync(syncOptions);
-        logger.info('Sequelize sync completed.');
+
+        const dialect = sequelize.getDialect();
+        let fkChecksDisabled = false;
+        try {
+            // In MySQL, dropping tables with FK dependencies can fail even if Sequelize orders them.
+            // Temporarily disable FOREIGN_KEY_CHECKS when using destructive sync options.
+            // Note: This is a pragmatic guard for local/dev when DB_SYNC_FORCE/ALTER is used and
+            // there may be legacy tables or constraints not represented in the current Sequelize models.
+            // Long-term, prefer explicit migrations to manage schema changes and remove orphaned FKs.
+            if (
+                (dialect === 'mysql' || dialect === 'mariadb') &&
+                (syncOptions.force || syncOptions.alter)
+            ) {
+                await sequelize.query('SET FOREIGN_KEY_CHECKS = 0');
+                fkChecksDisabled = true;
+                logger.info(
+                    'MySQL FOREIGN_KEY_CHECKS temporarily disabled for sync.',
+                );
+            }
+
+            await sequelize.sync(syncOptions);
+            logger.info('Sequelize sync completed.');
+        } finally {
+            if (fkChecksDisabled) {
+                try {
+                    await sequelize.query('SET FOREIGN_KEY_CHECKS = 1');
+                    logger.info(
+                        'MySQL FOREIGN_KEY_CHECKS re-enabled after sync.',
+                    );
+                } catch (reEnableErr) {
+                    logger.error(
+                        'Failed to re-enable FOREIGN_KEY_CHECKS',
+                        reEnableErr as any,
+                    );
+                }
+            }
+        }
     } catch (err) {
         logger.error('Database connection/sync failed', err as any);
         throw err;
     }
 }
 
+// Initialize models once on this sequelize instance
+const models: Models = initModels(sequelize);
+
 export const DB = {
-    Users: userModel(sequelize),
-    Categories: Category,
-    Dishes: Dish,
-    Orders: Order,
-    OrderItems: OrderItem,
-    Ratings: Rating,
-    RefreshTokens: RefreshToken,
-    Restaurants: Restaurant,
+    Users: models.User,
+    Categories: models.Category,
+    Dishes: models.Dish,
+    Orders: models.Order,
+    OrderItems: models.OrderItem,
+    Ratings: models.Rating,
+    RefreshTokens: models.RefreshToken,
+    Restaurants: models.Restaurant,
     sequelize, // connection instance (RAW queries)
     syncDatabase,
     Sequelize, // library
