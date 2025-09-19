@@ -8,7 +8,7 @@ export interface User {
     phone_number: string;
     is_Social_login: boolean;
     Social_login_provider?: string;
-    refresh_token_id?: string;
+    refresh_token?: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;
 }

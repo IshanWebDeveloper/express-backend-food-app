@@ -6,6 +6,7 @@ import {
     DB_PASSWORD,
     DB_NAME,
     DB_DIALECT,
+    NODE_ENV,
 } from '../../config';
 import UserModel from './user.model';
 import CategoryModel from './category.model';
@@ -15,10 +16,25 @@ import DishModel from './dish.model';
 import RatingModel from './rating.model';
 import RestaturantModel from './restaurant.model';
 import RefreshTokenModel from './refreshToken.model';
+import FavoritesFoodModel from './favoritesFood.model';
+
 const sequelize = new Sequelize(DB_NAME!, DB_USERNAME!, DB_PASSWORD!, {
     host: DB_HOST,
-    port: DB_PORT ? Number(DB_PORT) : undefined,
+    port: DB_PORT,
     dialect: DB_DIALECT as any,
+    timezone: '+09:00',
+    define: {
+        charset: 'utf8mb4',
+        collate: 'utf8mb4_general_ci',
+        underscored: true,
+        freezeTableName: true,
+    },
+    pool: { min: 0, max: 5 },
+    logQueryParameters: NODE_ENV === 'development',
+    logging: (query, time) => {
+        console.log(time + 'ms' + ' ' + query);
+    },
+    benchmark: true,
 });
 
 // Initialize models
@@ -30,6 +46,7 @@ const OrderItem = OrderItemModel(sequelize);
 const Rating = RatingModel(sequelize);
 const Restaurant = RestaturantModel(sequelize);
 const RefreshToken = RefreshTokenModel(sequelize);
+const FavoritesFood = FavoritesFoodModel(sequelize);
 
 // Associations
 
@@ -53,14 +70,15 @@ Rating.belongsTo(User, { foreignKey: 'user_id' });
 Dish.hasMany(Rating, { foreignKey: 'dish_id' });
 Rating.belongsTo(Dish, { foreignKey: 'dish_id' });
 
-User.belongsTo(RefreshToken, {
-    foreignKey: 'refresh_token_id',
-    as: 'refreshToken',
-});
-RefreshToken.hasOne(User, {
-    foreignKey: 'refresh_token_id',
-    as: 'user',
-});
+// Favorites associations
+User.hasMany(FavoritesFood, { foreignKey: 'user_id' });
+FavoritesFood.belongsTo(User, { foreignKey: 'user_id' });
+
+Dish.hasMany(FavoritesFood, { foreignKey: 'food_id' });
+FavoritesFood.belongsTo(Dish, { foreignKey: 'food_id' });
+
+// Note: Removed User <-> RefreshToken association to avoid FK constraint issues
+// RefreshToken is handled as a simple TEXT field in User model
 
 export {
     sequelize,
@@ -72,4 +90,7 @@ export {
     Rating,
     Restaurant,
     RefreshToken,
+    FavoritesFood,
+    // Aliases for backward compatibility
+    Dish as FoodProduct,
 };

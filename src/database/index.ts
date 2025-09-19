@@ -12,50 +12,23 @@ import {
     DB_USERNAME,
     NODE_ENV,
 } from '@/config';
-import userModel from './models/user.model';
 import {
+    User,
     Category,
     Dish,
     Order,
     OrderItem,
     Rating,
-    RefreshToken,
     Restaurant,
-    User,
+    RefreshToken,
+    FavoritesFood,
+    sequelize,
 } from './models';
-
-const sequelize = new Sequelize.Sequelize(
-    DB_NAME as string,
-    DB_USERNAME as string,
-    DB_PASSWORD,
-    {
-        dialect: (DB_DIALECT as Sequelize.Dialect) || 'mysql',
-        host: DB_HOST,
-        port: parseInt(DB_PORT as string, 10),
-        timezone: '+09:00',
-        define: {
-            charset: 'utf8mb4',
-            collate: 'utf8mb4_general_ci',
-            underscored: true,
-            freezeTableName: true,
-        },
-        pool: {
-            min: 0,
-            max: 5,
-        },
-        logQueryParameters: NODE_ENV === 'development',
-        logging: (query, time) => {
-            logger.info(time + 'ms' + ' ' + query);
-        },
-        benchmark: true,
-    },
-);
-
-sequelize.authenticate();
 
 export async function syncDatabase() {
     try {
         await sequelize.authenticate();
+        logger.info('Database connected successfully!');
 
         const shouldSync = DB_SYNC || NODE_ENV === 'development';
         if (!shouldSync) {
@@ -86,7 +59,7 @@ export async function syncDatabase() {
 }
 
 export const DB = {
-    Users: userModel(sequelize),
+    Users: User,
     Categories: Category,
     Dishes: Dish,
     Orders: Order,
@@ -94,6 +67,10 @@ export const DB = {
     Ratings: Rating,
     RefreshTokens: RefreshToken,
     Restaurants: Restaurant,
+    FavoritesFood: FavoritesFood,
+    // Aliases for backward compatibility
+    Food: Dish,
+    Favorites: FavoritesFood,
     sequelize, // connection instance (RAW queries)
     syncDatabase,
     Sequelize, // library
