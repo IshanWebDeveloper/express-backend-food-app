@@ -15,7 +15,7 @@
         "migration": "sequelize db:migrate",
         "init:seeders": "sequelize init:seeders",
         "seed:generate": "sequelize seed:generate --name",
-        "seed:all": "sequelize db:seed:all"
+        "seed:all": "sequelize db:seed --seed src/database/seeders/seed.js"
     },
     "author": "Ishan Hettiarachchi",
     "license": "MIT",
