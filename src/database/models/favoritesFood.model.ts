@@ -51,5 +51,6 @@ export default function (sequelize: Sequelize): typeof FavoritesFood {
             timestamps: true,
         },
     );
+
     return FavoritesFood;
 }

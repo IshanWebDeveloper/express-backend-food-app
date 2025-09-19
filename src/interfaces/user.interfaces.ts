@@ -6,6 +6,8 @@ export interface User {
     password: string;
     delivery_address: string;
     phone_number: string;
+    is_Social_login: boolean;
+    Social_login_provider?: string;
     refresh_token?: string;
     created_at?: string | undefined;
     updated_at?: string | undefined;

@@ -13,6 +13,8 @@ export class UserModel
     public username!: string;
     public password!: string;
     public refresh_token?: string;
+    public is_Social_login!: boolean;
+    public Social_login_provider?: string;
     public delivery_address!: string;
     public phone_number!: string;
     public created_at: string | undefined;
@@ -49,6 +51,14 @@ export default function (sequelize: Sequelize): typeof UserModel {
             },
             delivery_address: {
                 allowNull: false,
+                type: DataTypes.STRING,
+            },
+            is_Social_login: {
+                allowNull: false,
+                type: DataTypes.BOOLEAN,
+            },
+            Social_login_provider: {
+                allowNull: true,
                 type: DataTypes.STRING,
             },
             phone_number: {

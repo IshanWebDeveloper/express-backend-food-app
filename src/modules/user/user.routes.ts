@@ -6,22 +6,13 @@ import {
     isFoodFavoriteController,
     removeUserFavoriteFoodController,
 } from './user.controller';
-import { authMiddleware } from '@/middlewares/auth.middleware';
 
 const userRouter = express.Router();
 
-userRouter.get('/profile', authMiddleware, getUserProfileController);
-userRouter.get('/favorites', authMiddleware, getUserFavoriteFoodsController);
-userRouter.post('/favorites', authMiddleware, addUserFavoriteFoodController);
-userRouter.post(
-    '/favorites/remove',
-    authMiddleware,
-    removeUserFavoriteFoodController,
-);
-userRouter.post(
-    '/favorites/is-favorite',
-    authMiddleware,
-    isFoodFavoriteController,
-);
+userRouter.get('/profile', getUserProfileController);
+userRouter.get('/favorites', getUserFavoriteFoodsController);
+userRouter.post('/favorites', addUserFavoriteFoodController);
+userRouter.post('/favorites/remove', removeUserFavoriteFoodController);
+userRouter.post('/favorites/is-favorite', isFoodFavoriteController);
 
 export default userRouter;

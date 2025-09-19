@@ -1,4 +1,5 @@
-import { Order, OrderItem, FoodProduct } from '@/database/models';
+import { Order, OrderItem, Dish } from '@/database/models';
+import { OrderStatus } from '@/database/models/order.model';
 import { Transaction } from 'sequelize';
 
 export const OrderRepo = {
@@ -7,7 +8,7 @@ export const OrderRepo = {
             where: { userId },
             include: [
                 {
-                    model: FoodProduct,
+                    model: Dish,
                     through: { attributes: ['quantity', 'price'] },
                 },
             ],
@@ -22,14 +23,14 @@ export const OrderRepo = {
         t?: Transaction,
     ) => {
         const order = await Order.create(
-            { userId: userId as any, totalAmount, status: 'pending' },
+            { userId: userId as any, totalAmount, status: OrderStatus.PENDING },
             { transaction: t },
         );
         const orderId =
             typeof order.id === 'string' ? order.id : String(order.id);
         const orderItems = items.map(item => ({
             orderId,
-            productId: item.productId,
+            dishId: item.productId, // Map productId to dishId
             quantity: item.quantity,
             price: item.price,
         }));

@@ -1,0 +1,94 @@
+openapi: 3.0.0
+info:
+    title: Reports API
+    version: 1.0.0
+paths:
+    /reports/sales:
+        get:
+            summary: Total sales grouped by period
+            parameters:
+                - in: query
+                  name: period
+                  schema:
+                      type: string
+                      enum: [day, week, month]
+                      default: day
+                - in: query
+                  name: startDate
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: endDate
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                      description: Comma-separated statuses
+            responses:
+                '200':
+                    description: OK
+    /reports/top-items:
+        get:
+            summary: Top selling items
+            parameters:
+                - in: query
+                  name: metric
+                  schema:
+                      type: string
+                      enum: [quantity, revenue]
+                      default: quantity
+                - in: query
+                  name: startDate
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: endDate
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: limit
+                  schema:
+                      type: integer
+                      default: 10
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                      description: Comma-separated statuses
+            responses:
+                '200':
+                    description: OK
+    /reports/aov:
+        get:
+            summary: Average Order Value grouped by period
+            parameters:
+                - in: query
+                  name: period
+                  schema:
+                      type: string
+                      enum: [day, week, month]
+                      default: day
+                - in: query
+                  name: startDate
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: endDate
+                  schema:
+                      type: string
+                      format: date-time
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                      description: Comma-separated statuses
+            responses:
+                '200':
+                    description: OK

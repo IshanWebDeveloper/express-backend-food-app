@@ -42,6 +42,7 @@ export const signUpService = async (userData: User) => {
         phone_number: userData.phone_number,
         username,
         password: hashedPassword,
+        is_Social_login: false,
     });
 
     const accessToken = await generateAccessToken(
