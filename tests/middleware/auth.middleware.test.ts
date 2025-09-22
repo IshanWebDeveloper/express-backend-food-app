@@ -1,10 +1,10 @@
 import { authMiddleware } from '../../src/middlewares/auth.middleware';
-import { generateAccessToken } from '../../src/middlewares/jwt.service';
+import { verifyAccessToken } from '../../src/middlewares/jwt.service';
 import { CustomError } from '../../src/utils/custom-error';
 import { Request, Response, NextFunction } from 'express';
 
 jest.mock('../../src/middlewares/jwt.service', () => ({
-    verifyJWT: jest.fn(),
+    verifyAccessToken: jest.fn(),
 }));
 
 interface CustomRequest extends Request {
@@ -58,7 +58,7 @@ describe('authMiddleware', () => {
         const mockPayload = { userId: '123' };
 
         (req.header as jest.Mock).mockReturnValue('Bearer validToken');
-        (generateAccessToken as jest.Mock).mockResolvedValue(mockPayload);
+        (verifyAccessToken as jest.Mock).mockResolvedValue(mockPayload);
 
         await authMiddleware(req as Request, res as Response, next);
 
@@ -70,7 +70,7 @@ describe('authMiddleware', () => {
         req.url = '/api/protected-route';
 
         (req.header as jest.Mock).mockReturnValue('Bearer invalidToken');
-        (generateAccessToken as jest.Mock).mockRejectedValue(
+        (verifyAccessToken as jest.Mock).mockRejectedValue(
             new Error('Invalid token'),
         );
 

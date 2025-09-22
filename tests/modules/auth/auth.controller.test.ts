@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { signUpController, signInController } from '../../../src/modules/auth/auth.controller';
-import { signUpService, signInService } from '../../../src/modules/auth/auth.service';
+import {
+    signUpController,
+    signInController,
+} from '../../../src/modules/auth/auth.controller';
+import {
+    signUpService,
+    signInService,
+} from '../../../src/modules/auth/auth.service';
 
 jest.mock('../../../src/modules/auth/auth.service', () => ({
     signUpService: jest.fn(),
@@ -8,7 +14,7 @@ jest.mock('../../../src/modules/auth/auth.service', () => ({
 }));
 
 beforeEach(() => {
-    jest.clearAllMocks(); 
+    jest.clearAllMocks();
 });
 
 describe('signUpController', () => {
@@ -26,7 +32,11 @@ describe('signUpController', () => {
     });
 
     it('should return 201 and response data on successful sign-up', async () => {
-        const mockUser = { id: 1, email: 'new@example.com', username: 'newuser' };
+        const mockUser = {
+            id: 1,
+            email: 'new@example.com',
+            username: 'newuser',
+        };
         (signUpService as jest.Mock).mockResolvedValue({ user: mockUser });
 
         await signUpController(req as Request, res as Response, next);
@@ -35,7 +45,7 @@ describe('signUpController', () => {
         expect(res.status).toHaveBeenCalledWith(201);
         expect(res.json).toHaveBeenCalledWith({
             message: 'Successfully signed up',
-            data: mockUser,
+            data: { user: mockUser },
         });
     });
 

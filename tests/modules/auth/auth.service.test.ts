@@ -7,8 +7,11 @@ import repo from '../../../src/modules/auth/auth.repo';
 import { User } from '../../../src/interfaces/user.interfaces';
 import { DB } from '../../../src/database';
 import { hash, compareSync } from 'bcrypt';
-import { validateSignUp, validateSignIn } from '../../../src/modules/auth/auth.validator';
-import { generateJWT } from '../../../src/middlewares/jwt.service';
+import {
+    validateSignUp,
+    validateSignIn,
+} from '../../../src/modules/auth/auth.validator';
+import { generateAccessToken } from '../../../src/middlewares/jwt.service';
 
 jest.mock('../../../src/modules/auth/auth.repo');
 jest.mock('../../../src/database', () => ({
@@ -27,7 +30,7 @@ jest.mock('bcrypt', () => ({
 
 jest.mock('../../../src/modules/auth/auth.validator', () => ({
     validateSignUp: jest.fn(),
-    validateSignIn: jest.fn(() => ({ error: null })), 
+    validateSignIn: jest.fn(() => ({ error: null })),
 }));
 
 jest.mock('../../../src/middlewares/jwt.service');
@@ -39,17 +42,18 @@ afterAll(async () => {
 describe('signUpService', () => {
     it('should throw error if email already exists', async () => {
         const userData: User = {
-            email: 'existing@example.com',
+            email: 'mary2@example.com',
             name: 'Existing User',
             username: 'existinguser',
             password: 'Password123!',
+            is_Social_login: false,
             created_at: undefined,
             updated_at: undefined,
         };
 
         (repo.findUserByEmail as jest.Mock).mockResolvedValue({
             id: 1,
-            email: 'existing@example.com',
+            email: 'mary3@example.com',
         });
 
         (validateSignUp as jest.Mock).mockReturnValue({ error: null });
@@ -65,6 +69,7 @@ describe('signUpService', () => {
             name: 'Invalid User',
             username: 'invaliduser',
             password: 'Password123!',
+            is_Social_login: false,
             created_at: undefined,
             updated_at: undefined,
         };
@@ -87,6 +92,7 @@ describe('signUpService', () => {
             name: 'New User',
             username: 'newuser',
             password: 'Password123!',
+            is_Social_login: false,
             created_at: undefined,
             updated_at: undefined,
         };
@@ -115,13 +121,16 @@ describe('signInService', () => {
         name: 'Test User',
         username: 'testuser',
         password: 'hashed_password',
+        is_Social_login: false,
         created_at: undefined,
         updated_at: undefined,
     };
 
     it('should return user and accessToken if credentials are correct', async () => {
         (repo.findUserByEmail as jest.Mock).mockResolvedValue(mockUser);
-        (generateJWT as jest.Mock).mockResolvedValue('mocked_access_token');
+        (generateAccessToken as jest.Mock).mockResolvedValue(
+            'mocked_access_token',
+        );
         jest.spyOn(require('bcrypt'), 'compareSync').mockReturnValue(true);
 
         const result = await signInService({
@@ -134,7 +143,7 @@ describe('signInService', () => {
         });
 
         expect(repo.findUserByEmail).toHaveBeenCalledWith('test@example.com');
-        expect(generateJWT).toHaveBeenCalled();
+        expect(generateAccessToken).toHaveBeenCalled();
         expect(result).toEqual({
             user: mockUser,
             accessToken: 'mocked_access_token',
@@ -174,9 +183,11 @@ describe('signInService', () => {
 
     it('should throw 400 error if validation fails', async () => {
         (validateSignIn as jest.Mock).mockReturnValue({
-            error: { details: [{ message: 'Email and password are required' }] }
+            error: {
+                details: [{ message: 'Email and password are required' }],
+            },
         });
-    
+
         await expect(
             signInService({
                 email: '',
@@ -188,5 +199,4 @@ describe('signInService', () => {
             }),
         ).rejects.toThrow('Email and password are required');
     });
-    
 });
