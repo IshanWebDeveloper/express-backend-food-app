@@ -11,17 +11,22 @@
         "build": "tsc && tsc-alias && echo 'Build Finished! 👍'",
         "lint": "eslint --ignore-path .gitignore --ext .ts src/",
         "lint:fix": "npm run lint -- --fix",
+        "dropdb": "sequelize db:drop",
+        "createdb": "sequelize db:create",
         "migration:generate": "sequelize migration:generate --name",
         "migration": "sequelize db:migrate",
         "init:seeders": "sequelize init:seeders",
         "seed:generate": "sequelize seed:generate --name",
-        "seed:all": "sequelize db:seed --seed src/database/seeders/seed.js"
+        "seed:all": "sequelize db:seed --seed src/database/seeders/seed.js",
+        "seed:undo": "sequelize db:seed:undo"
     },
     "author": "Ishan Hettiarachchi",
     "license": "MIT",
     "dependencies": {
         "bcrypt": "^5.1.1",
         "cors": "^2.8.5",
+        "date-fns": "^4.1.0",
+        "date-fns-tz": "^3.2.0",
         "dotenv": "^16.4.5",
         "express": "^4.21.1",
         "joi": "^17.13.3",
@@ -35,7 +40,8 @@
         "typescript-eslint": "^8.43.0",
         "uuid": "^13.0.0",
         "winston": "^3.15.0",
-        "winston-daily-rotate-file": "^5.0.0"
+        "winston-daily-rotate-file": "^5.0.0",
+        "zod": "^4.1.9"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.0.0",
