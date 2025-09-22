@@ -90,3 +90,36 @@ components:
                             type: string
                         refreshToken:
                             type: string
+
+        OAuthSignInRequest:
+            type: object
+            required:
+                - email
+                - is_Social_login
+                - Social_login_provider
+            properties:
+                email:
+                    type: string
+                    example: email@example.com
+                is_Social_login:
+                    type: boolean
+                    enum: [true]
+                    example: true
+                Social_login_provider:
+                    type: string
+                    enum: [GOOGLE, FACEBOOK, APPLE]
+                    example: GOOGLE
+
+        RefreshTokenResponse:
+            type: object
+            properties:
+                message:
+                    type: string
+                    example: Successfully refreshed token
+                data:
+                    type: object
+                    properties:
+                        accessToken:
+                            type: string
+                        refreshToken:
+                            type: string

@@ -12,25 +12,26 @@ const repo = {
         return await DB.Users.findOne({ where: { id } });
     },
     findByRefreshToken: async (refreshToken: string): Promise<User | null> => {
-        return await DB.Users.findOne({
-            where: { refresh_token: refreshToken },
+        const rt = await DB.RefreshTokens.findOne({
+            where: { token: refreshToken },
+            include: [{ model: DB.Users, as: 'user' } as any],
         });
+        const user = rt ? (rt.get('user') as User) : null;
+        return user ?? null;
     },
     saveRefreshToken: async (
         userId: string | undefined,
         refreshToken: string,
     ): Promise<void> => {
         if (!userId) return;
-        await DB.Users.update(
-            { refresh_token: refreshToken },
-            { where: { id: userId } },
-        );
+        await DB.RefreshTokens.create({
+            user_id: userId as string,
+            token: refreshToken,
+            expires_at: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+        } as any);
     },
     clearRefreshToken: async (user: User): Promise<void> => {
-        await DB.Users.update(
-            { refresh_token: '' },
-            { where: { id: user.id } },
-        );
+        await DB.RefreshTokens.destroy({ where: { user_id: user.id } as any });
     },
 
     createUser: async (userData: User): Promise<User> => {

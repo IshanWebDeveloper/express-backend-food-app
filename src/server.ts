@@ -56,6 +56,9 @@ DB.sequelize
     .authenticate()
     .then(() => {
         logger.info('Database connected successfully!');
+        return DB.syncDatabase();
+    })
+    .then(() => {
         appServer.listen(port, () => {
             logger.info(`Server is running on http://localhost:${port}`);
         });

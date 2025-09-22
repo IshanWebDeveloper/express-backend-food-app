@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import {
     logoutService,
+    oauthSignInService,
     refreshTokenService,
     signInService,
     signUpService,
@@ -36,6 +37,24 @@ export const signInController = async (
 
         res.status(200).json({
             message: 'Successfully signed in',
+            data: response,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const oauthSignInController = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+): Promise<void> => {
+    try {
+        const userData = req.body;
+        console.log('userData', userData);
+        const response = await oauthSignInService(userData);
+        res.status(200).json({
+            message: 'Successfully signed in with Google',
             data: response,
         });
     } catch (error) {

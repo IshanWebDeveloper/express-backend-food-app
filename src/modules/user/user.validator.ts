@@ -1,29 +1,18 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-const options = {
-    errors: {
-        wrap: {
-            label: '',
-        },
-    },
+type JoiLikeError = { details: Array<{ message: string }> };
+type ValidationResult<T> = { value?: T; error?: JoiLikeError };
+
+const toValidationResult = <T>(res: any): ValidationResult<T> => {
+    if (res.success) return { value: res.data };
+    const issue = res.error?.errors?.[0];
+    const message = issue?.message || 'Validation error';
+    return { error: { details: [{ message }] } };
 };
 
-export const validateAddFavoriteFood = (data: any) => {
-    const schema = Joi.object({
-        foodId: Joi.string().uuid().required().messages({
-            'any.required': 'Food ID is required',
-            'string.uuid': 'Food ID must be a valid UUID',
-        }),
+export const validateUserIdParam = (params: any): ValidationResult<any> => {
+    const schema = z.object({
+        userId: z.uuid({ message: 'User ID must be a valid UUID' }),
     });
-    return schema.validate(data, options);
-};
-
-export const validateUserIdParam = (params: any) => {
-    const schema = Joi.object({
-        userId: Joi.string().uuid().required().messages({
-            'any.required': 'User ID is required',
-            'string.uuid': 'User ID must be a valid UUID',
-        }),
-    });
-    return schema.validate(params, options);
+    return toValidationResult(schema.safeParse(params));
 };

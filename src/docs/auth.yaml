@@ -56,6 +56,32 @@
                 description: 'Internal server error'
         security: []
 
+# [POST] Google OAuth Sign In
+/auth/oauth/google:
+    post:
+        tags:
+            - Auth
+        summary: Sign in with Google OAuth
+        requestBody:
+            description: OAuth payload
+            required: true
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/OAuthSignInRequest'
+        responses:
+            200:
+                description: 'Successfully signed in with Google'
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthSuccessResponse'
+            400:
+                description: 'Bad Request'
+            500:
+                description: 'Internal server error'
+        security: []
+
 # [POST] Sign Out
 /auth/signout:
     post:
@@ -92,6 +118,10 @@
         responses:
             200:
                 description: 'Token refreshed'
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/RefreshTokenResponse'
             401:
                 description: 'Invalid token'
             500:

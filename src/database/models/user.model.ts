@@ -1,5 +1,6 @@
 import { User } from '@/interfaces/user.interfaces';
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { SocialLoginProvider } from './order.model';
 
 export type UserCreationAttributes = Optional<User, 'id' | 'username'>;
 
@@ -11,10 +12,13 @@ export class UserModel
     public email!: string;
     public name!: string;
     public username!: string;
-    public password!: string;
-    public refresh_token?: string;
-    public delivery_address!: string;
-    public phone_number!: string;
+    public password?: string;
+    public is_Social_login!: boolean;
+    public Social_login_provider?: SocialLoginProvider | null;
+    // Deprecated column from previous design; not used as FK anymore
+    public refresh_token_id?: string;
+    public delivery_address?: string;
+    public phone_number?: string;
     public created_at: string | undefined;
     public updated_at: string | undefined;
     public readonly createdAt!: Date;
@@ -44,20 +48,32 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 unique: true,
             },
             password: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.STRING(255),
             },
             delivery_address: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.STRING,
+            },
+            is_Social_login: {
+                allowNull: false,
+                type: DataTypes.BOOLEAN,
+                field: 'is_social_login',
+            },
+            Social_login_provider: {
+                allowNull: true,
+                type: DataTypes.ENUM(...Object.values(SocialLoginProvider)),
+                field: 'social_login_provider',
             },
             phone_number: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.STRING,
             },
-            refresh_token: {
+            // Keep column if already exists in DB, but do not enforce FK that caused sync errors
+            refresh_token_id: {
                 allowNull: true,
                 type: DataTypes.TEXT,
+                field: 'refresh_token_id',
             },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,

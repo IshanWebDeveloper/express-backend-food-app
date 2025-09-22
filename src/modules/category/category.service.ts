@@ -12,15 +12,17 @@ export const getAllCategoriesService = async () => {
 };
 
 export const getCategoryService = async (params: any) => {
+    console.log('Params:', params); // Debug log
     const { error } = validateGetCategory(params);
+
     if (error) {
         throw new CustomError(error.details[0].message, 400);
     }
-    const { categoryId } = params;
-    if (!categoryId || isNaN(Number(categoryId))) {
+    const { categoryid } = params;
+    if (!categoryid) {
         throw new CustomError('Invalid or missing categoryId parameter', 400);
     }
-    return await CategoryRepo.findById(Number(categoryId));
+    return await CategoryRepo.findById(categoryid);
 };
 
 export const createCategoryService = async (data: any) => {

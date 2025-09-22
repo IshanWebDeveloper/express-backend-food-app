@@ -1,27 +1,29 @@
-import { Category } from '../../database/models';
+import { DB } from '@/database';
 
 class CategoryRepo {
     async findAll() {
-        return Category.findAll();
+        return DB.Categories.findAll(
+            { order: [['position', 'ASC']] }, // Order by position in ascending order
+        );
     }
 
     async findById(id: string | number) {
-        return Category.findByPk(id);
+        return DB.Categories.findByPk(id);
     }
 
     async create(data: any) {
-        return Category.create(data);
+        return DB.Categories.create(data);
     }
 
     async update(id: string | number, data: any) {
-        const category = await Category.findByPk(id);
+        const category = await DB.Categories.findByPk(id);
         if (!category) return null;
         await category.update(data);
         return category;
     }
 
     async delete(id: string | number) {
-        const category = await Category.findByPk(id);
+        const category = await DB.Categories.findByPk(id);
         if (!category) return null;
         await category.destroy();
         return true;

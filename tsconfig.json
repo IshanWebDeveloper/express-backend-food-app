@@ -20,6 +20,10 @@
         "skipLibCheck": true,
         "lib": ["esnext", "dom"]
     },
-    "include": ["src/**/*.ts", "src/database/models/index.ts"],
+    "include": [
+        "src/**/*.ts",
+        "src/database/models/index.ts",
+        "src/database/seeders/seed.js"
+    ],
     "exclude": ["node_modules"]
 }
