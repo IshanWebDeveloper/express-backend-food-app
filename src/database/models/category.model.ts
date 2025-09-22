@@ -6,11 +6,8 @@ interface CategoryAttributes {
     name: string;
 }
 
-interface CategoryCreationAttributes
-    extends Optional<CategoryAttributes, 'id'> {}
-
 class Category
-    extends Model<CategoryAttributes, CategoryCreationAttributes>
+    extends Model<CategoryAttributes, Optional<CategoryAttributes, 'id'>>
     implements CategoryAttributes
 {
     public id!: string;
