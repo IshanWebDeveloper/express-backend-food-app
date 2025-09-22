@@ -1,5 +1,6 @@
 import { User } from '@/interfaces/user.interfaces';
 import {
+    validateOauthSignIn,
     validateSignIn,
     validateSignUp,
     validateUpdateUser,
@@ -34,12 +35,17 @@ export const signUpService = async (userData: User) => {
         36,
     );
     const username = `${userData.email.split('@')[0]}-${randomId}`;
+    if (!userData.password) {
+        throw new CustomError('Password is required', 400);
+    }
     const hashedPassword = await hash(userData.password, 10);
     const newUserData = await repo.createUser({
         name: userData.name,
         email: userData.email,
         delivery_address: userData.delivery_address,
         phone_number: userData.phone_number,
+        is_Social_login: userData.is_Social_login || false,
+        Social_login_provider: userData.Social_login_provider || undefined,
         username,
         password: hashedPassword,
     });
@@ -80,6 +86,9 @@ export const signInService = async (userData: User) => {
         throw new CustomError('Email or password is invalid', 401);
     }
 
+    if (!userData.password || !user.password) {
+        throw new CustomError('Email or password is invalid', 401);
+    }
     const validPassword = compareSync(userData.password, user.password);
     if (!validPassword) {
         throw new CustomError('Email or password is invalid', 401);
@@ -108,6 +117,56 @@ export const signInService = async (userData: User) => {
             email: user.email,
             username: user.username,
             delivery_address: user.delivery_address,
+            phone_number: user.phone_number,
+        },
+        accessToken,
+        refreshToken,
+    };
+};
+
+export const oauthSignInService = async (
+    userData: User,
+): Promise<{ user: User; accessToken: string; refreshToken: string }> => {
+    const { error } = validateOauthSignIn(userData);
+    if (error) {
+        throw new CustomError(error.details[0].message, 400);
+    }
+    let user = await repo.findUserByEmail(userData.email);
+    if (!user) {
+        const randomId = (
+            Date.now() + Math.floor(Math.random() * 100)
+        ).toString(36);
+        const username = `${userData.email.split('@')[0]}-${randomId}`;
+        // create a random password for social login users
+        user = await repo.createUser({
+            name: userData.name,
+            email: userData.email,
+            phone_number: userData.phone_number,
+            is_Social_login: userData.is_Social_login || true,
+            Social_login_provider: userData.Social_login_provider || undefined,
+            username,
+        });
+    }
+
+    const accessToken = await generateAccessToken(
+        { userId: user.id },
+        JWT_ACCESS_TOKEN_SECRET as string,
+    );
+    const refreshToken = await generateRefreshToken(
+        { userId: user.id },
+        process.env.JWT_REFRESH_TOKEN_SECRET as string,
+    );
+    await repo.saveRefreshToken(user.id, refreshToken);
+
+    return {
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            username: user.username,
+            delivery_address: user.delivery_address,
+            is_Social_login: user.is_Social_login,
+            Social_login_provider: user.Social_login_provider,
             phone_number: user.phone_number,
         },
         accessToken,
