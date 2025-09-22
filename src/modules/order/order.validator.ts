@@ -1,39 +1,29 @@
-import Joi from 'joi';
+import { z } from 'zod';
 
-const options = {
-    errors: {
-        wrap: {
-            label: '',
-        },
-    },
+type JoiLikeError = { details: Array<{ message: string }> };
+type ValidationResult<T> = { value?: T; error?: JoiLikeError };
+
+const toValidationResult = <T>(res: any): ValidationResult<T> => {
+    if (res.success) return { value: res.data };
+    const issue = res.error?.errors?.[0];
+    const message = issue?.message || 'Validation error';
+    return { error: { details: [{ message }] } };
 };
 
-export const validateCreateOrder = (orderData: any) => {
-    const schema = Joi.object({
-        items: Joi.array()
-            .items(
-                Joi.object({
-                    productId: Joi.string().uuid().required().messages({
-                        'any.required': 'Product ID is required',
-                        'string.uuid': 'Product ID must be a valid UUID',
-                    }),
-                    quantity: Joi.number()
-                        .integer()
-                        .min(1)
-                        .required()
-                        .messages({
-                            'number.base': 'Quantity must be a number',
-                            'number.min': 'Quantity must be at least 1',
-                            'any.required': 'Quantity is required',
-                        }),
-                }),
-            )
-            .min(1)
-            .required()
-            .messages({
-                'array.min': 'Order must have at least one item',
-                'any.required': 'Order items are required',
-            }),
+export const validateCreateOrder = (orderData: any): ValidationResult<any> => {
+    const itemSchema = z.object({
+        productId: z
+            .string()
+            .uuid({ message: 'Product ID must be a valid UUID' }),
+        quantity: z
+            .number()
+            .int()
+            .min(1, { message: 'Quantity must be at least 1' }),
     });
-    return schema.validate(orderData, options);
+    const schema = z.object({
+        items: z
+            .array(itemSchema)
+            .min(1, { message: 'Order must have at least one item' }),
+    });
+    return toValidationResult(schema.safeParse(orderData));
 };
