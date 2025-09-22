@@ -1,7 +1,4 @@
-import {
-    OrderStatus,
-    SocialLoginProvider,
-} from '@/database/models/order.model';
+import { SocialLoginProvider } from '@/database/models/order.model';
 
 export interface User {
     id?: string;

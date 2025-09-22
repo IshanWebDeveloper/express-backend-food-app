@@ -1,3 +1,7 @@
+# Express Backend Food App
+
+Node.js + Express backend for a food ordering application, using Sequelize ORM with MySQL and a modular architecture. OpenAPI docs are served at /api-docs.
+
 ## Environment Variables
 
 Create a `.env.development` file in the project root with the following structure:
@@ -19,25 +23,27 @@ JWT_REFRESH_TOKEN_SECRET=your-refresh-token-secret
 
 Adjust values as needed for your local setup. Use strong secrets in production.
 
-# Express Backend Food App
+Optional (development helpers):
+
+-   DB_SYNC=true to enable sequelize.sync in non-dev environments
+-   DB_SYNC_ALTER=true to allow non-destructive schema syncs
+-   DB_SYNC_FORCE=true to drop/recreate tables (destructive; for local only)
 
 ## Overview
-
-Node.js Express backend for a food ordering application, using Sequelize ORM with mysql and a modular architecture.
 
 ## Features
 
 -   User authentication (JWT)
--   Food catalog CRUD
+-   Dish catalog CRUD
 -   Orders and order items
--   Favorites (user favorite foods)
 -   Category management
+-   Reporting endpoints
 -   OpenAPI (Swagger) docs
 -   Jest-based testing
 
 ## Project Structure
 
--   `src/modules/` — Business logic, organized by domain (auth, user, food, order, cart, category)
+-   `src/modules/` — Business logic, organized by domain (auth, user, category, dish, order, reporting)
 -   `src/database/` — Sequelize models, migrations, seeders
 -   `src/middlewares/` — Auth/JWT and error handling
 -   `src/utils/` — Logging, error handling, Swagger setup
@@ -47,43 +53,68 @@ Node.js Express backend for a food ordering application, using Sequelize ORM wit
 ## Developer Workflows
 
 -   **Start Dev Server:**
+
     ```bash
     npm run dev
     ```
+
 -   **Run Tests:**
+
     ```bash
     npm test
     ```
+
 -   **Lint:**
+
     ```bash
     npm run lint
     ```
+
 -   **DB Migrate:**
+
     ```bash
+    npm run migration
+    # or
     npx sequelize-cli db:migrate
     ```
+
 -   **DB Seed:**
+
     ```bash
-    npx sequelize-cli db:seed:all
+    npm run seed:all
+    # or
+    npx sequelize-cli db:seed --seed src/database/seeders/seed.js
     ```
+
+Other useful scripts:
+
+-   Generate a migration: `npm run migration:generate -- <name>`
+-   Generate a seeder: `npm run seed:generate -- <name>`
+-   Create/Drop DB (local): `npm run createdb` / `npm run dropdb`
 
 ## API Endpoints
 
--   All routes are prefixed with `/api/`
--   Auth: `/api/auth/`
--   User: `/api/user/`
--   Food: `/api/food/`
--   Order: `/api/order/`
--   Category: `/api/category/`
+-   All routes are prefixed with `/api/v1`
+-   Auth: `/api/v1/auth/*`
+-   User: `/api/v1/user/*` (protected)
+-   Categories: `/api/v1/categories/*` (protected)
+-   Dishes: `/api/v1/dishes/*` (protected)
+-   Orders: `/api/v1/orders/*` (protected)
+-   Reports: `/api/v1/reports/*` (protected)
+
+API documentation (Swagger UI) is available at: `/api-docs`.
+
+Protected endpoints require an Authorization header:
+`Authorization: Bearer <access_token>`
 
 ## Patterns & Conventions
 
 -   Each module: controller, service, repo, validator
 -   Centralized error handling (`src/utils/error-handler.ts`)
--   Logging to `src/logs/` by date
+-   Logging to `logs/` by date
 -   Input validation with Joi (see `*.validator.ts`)
 -   Shared interfaces in `src/interfaces/`
--   All routes registered in `src/routes/routes.ts`
+-   All routes registered in `src/routes/routes.ts` (mounted at `/api/v1`)
 -   Swagger docs in `src/docs/`
 
 ## Example: Add a New Resource
