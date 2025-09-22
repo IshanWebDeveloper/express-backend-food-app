@@ -1,5 +1,6 @@
 import { User } from '@/interfaces/user.interfaces';
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { SocialLoginProvider } from './order.model';
 
 export type UserCreationAttributes = Optional<User, 'id' | 'username'>;
 
@@ -11,13 +12,13 @@ export class UserModel
     public email!: string;
     public name!: string;
     public username!: string;
-    public password!: string;
+    public password?: string;
     public is_Social_login!: boolean;
-    public Social_login_provider?: string;
+    public Social_login_provider?: SocialLoginProvider | null;
     // Deprecated column from previous design; not used as FK anymore
     public refresh_token_id?: string;
-    public delivery_address!: string;
-    public phone_number!: string;
+    public delivery_address?: string;
+    public phone_number?: string;
     public created_at: string | undefined;
     public updated_at: string | undefined;
     public readonly createdAt!: Date;
@@ -47,11 +48,11 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 unique: true,
             },
             password: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.STRING(255),
             },
             delivery_address: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.STRING,
             },
             is_Social_login: {
@@ -61,11 +62,11 @@ export default function (sequelize: Sequelize): typeof UserModel {
             },
             Social_login_provider: {
                 allowNull: true,
-                type: DataTypes.STRING,
+                type: DataTypes.ENUM(...Object.values(SocialLoginProvider)),
                 field: 'social_login_provider',
             },
             phone_number: {
-                allowNull: false,
+                allowNull: true,
                 type: DataTypes.STRING,
             },
             // Keep column if already exists in DB, but do not enforce FK that caused sync errors

@@ -7,6 +7,12 @@ export enum OrderStatus {
     DELIVERED = 'delivered',
     CANCELLED = 'cancelled',
 }
+
+export enum SocialLoginProvider {
+    GOOGLE = 'GOOGLE',
+    FACEBOOK = 'FACEBOOK',
+    APPLE = 'APPLE',
+}
 interface OrderAttributes {
     id: string;
     user_id: string;
