@@ -1,5 +1,4 @@
 import express from 'express';
-import { authMiddleware } from '@/middlewares/auth.middleware';
 import {
     getAverageOrderValueController,
     getSalesByPeriodController,
@@ -14,6 +13,7 @@ reportRouter.get('/sales', getSalesByPeriodController);
 // GET /reports/top-items?metric=quantity|revenue&startDate=&endDate=&limit=&status=
 reportRouter.get('/top-items', getTopSellingItemsController);
 
+//average order value by period
 // GET /reports/aov?period=day|week|month&startDate=&endDate=&status=
 reportRouter.get('/aov', getAverageOrderValueController);
 

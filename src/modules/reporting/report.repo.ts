@@ -1,4 +1,6 @@
-import { sequelize } from '@/database/models';
+import { DB } from '@/database';
+import { parseISO, addDays } from 'date-fns';
+import { formatInTimeZone } from 'date-fns-tz';
 import { Op, QueryTypes } from 'sequelize';
 
 export type Period = 'day' | 'week' | 'month';
@@ -33,14 +35,14 @@ function periodSelect(period: Period, dialect: string) {
     // Build SQL expression for grouping by date period
     // We rely on created_at column per model config; use sequelize.literal
     if (dialect === 'postgres') {
-        const dateCol = `COALESCE("orders"."created_at", "orders"."createdAt")`;
+        const dateCol = `"orders"."created_at"`;
         if (period === 'day') return `to_char(${dateCol}, 'YYYY-MM-DD')`;
         if (period === 'week')
             return `to_char(date_trunc('week', ${dateCol}), 'IYYY-IW')`;
         return `to_char(date_trunc('month', ${dateCol}), 'YYYY-MM')`;
     }
     // generic fallback using DATE_FORMAT for mysql/mariadb
-    const dateCol = `COALESCE(orders.created_at, orders.createdAt)`;
+    const dateCol = `orders.created_at`;
     if (period === 'day') return `DATE_FORMAT(${dateCol}, '%Y-%m-%d')`;
     if (period === 'week')
         return `DATE_FORMAT(STR_TO_DATE(CONCAT(YEARWEEK(${dateCol}, 3), ' Monday'), '%X%V %W'), '%x-%v')`;
@@ -53,19 +55,26 @@ export const ReportRepo = {
         range?: DateRange,
         status?: string | string[],
     ) {
-        const dialect = sequelize.getDialect();
+        const dialect = DB.sequelize.getDialect();
         const periodExpr = periodSelect(period, dialect);
         const replacements: any = {};
         let whereSql = 'WHERE 1=1';
         if (range?.startDate) {
-            whereSql +=
-                ' AND COALESCE(orders.created_at, orders.createdAt) >= :startDate';
-            replacements.startDate = range.startDate;
+            whereSql += ' AND orders.created_at >= :startDate';
+            // Force midnight in Asia/Tokyo regardless of incoming time
+            replacements.startDate = `${formatInTimeZone(
+                parseISO(range.startDate),
+                'Asia/Tokyo',
+                'yyyy-MM-dd',
+            )} 00:00:00`;
         }
         if (range?.endDate) {
-            whereSql +=
-                ' AND COALESCE(orders.created_at, orders.createdAt) <= :endDate';
-            replacements.endDate = range.endDate;
+            whereSql += ' AND orders.created_at < :endDate';
+            replacements.endDate = `${formatInTimeZone(
+                parseISO(range.endDate),
+                'Asia/Tokyo',
+                'yyyy-MM-dd',
+            )} 00:00:00`;
         }
         const statuses = status
             ? Array.isArray(status)
@@ -76,15 +85,15 @@ export const ReportRepo = {
         replacements.statuses = statuses;
 
         const sql = `
-			SELECT ${periodExpr} AS period,
-				   COUNT(*) AS orders_count,
-				   SUM(COALESCE(orders.total_amount, orders."totalAmount")) AS total_sales
-			FROM orders
-			${whereSql}
-			GROUP BY period
-			ORDER BY period ASC;
-		`;
-        return await sequelize.query(sql, {
+            SELECT ${periodExpr} AS period,
+               COUNT(*) AS orders_count,
+               SUM(orders.total_amount) AS total_sales
+            FROM orders
+            ${whereSql}
+            GROUP BY period
+            ORDER BY period ASC;
+        `;
+        return await DB.sequelize.query(sql, {
             type: QueryTypes.SELECT,
             replacements,
         });
@@ -95,17 +104,31 @@ export const ReportRepo = {
         range?: DateRange,
         limit = 10,
         status?: string | string[],
-    ) {
+    ): Promise<
+        Array<{
+            dish_id: string;
+            name: string;
+            value: string;
+        }>
+    > {
         const replacements: any = { limit };
         let whereSql = 'WHERE 1=1';
         if (range?.startDate) {
-            whereSql +=
-                ' AND COALESCE(o.created_at, o.createdAt) >= :startDate';
-            replacements.startDate = range.startDate;
+            whereSql += ' AND o.created_at >= :startDate';
+            replacements.startDate = `${formatInTimeZone(
+                parseISO(range.startDate),
+                'Asia/Tokyo',
+                'yyyy-MM-dd',
+            )} 00:00:00`;
         }
         if (range?.endDate) {
-            whereSql += ' AND COALESCE(o.created_at, o.createdAt) <= :endDate';
-            replacements.endDate = range.endDate;
+            // Half-open range to include entire endDate day
+            whereSql += ' AND o.created_at < :endDate';
+            replacements.endDate = `${formatInTimeZone(
+                range.endDate,
+                'Asia/Tokyo',
+                'yyyy-MM-dd',
+            )} 00:00:00`;
         }
         const statuses = status
             ? Array.isArray(status)
@@ -115,25 +138,26 @@ export const ReportRepo = {
         whereSql += ' AND o.status IN (:statuses)';
         replacements.statuses = statuses;
 
-        const qtyCol = `COALESCE(oi.quantity, oi."quantity")`;
-        const priceCol = `COALESCE(oi.price, oi."price")`;
+        const qtyCol = `oi.quantity`;
+        const priceCol = `oi.price`;
         const aggExpr =
             metric === 'revenue'
                 ? `SUM(${qtyCol} * ${priceCol})`
                 : `SUM(${qtyCol})`;
         const sql = `
-			SELECT fp.id AS product_id,
-				   fp.name AS name,
-				   ${aggExpr} AS value
-			FROM order_items oi
-			JOIN orders o ON o.id = COALESCE(oi.order_id, oi."orderId")
-			JOIN food_products fp ON fp.id = COALESCE(oi.product_id, oi."productId")
-			${whereSql}
-			GROUP BY fp.id, fp.name
-			ORDER BY value DESC
-			LIMIT :limit;
-		`;
-        return await sequelize.query(sql, {
+            SELECT d.*, t.value
+            FROM (
+                SELECT oi.dish_id, ${aggExpr} AS value
+                FROM order_items oi
+                JOIN orders o ON o.id = oi.order_id
+                ${whereSql}
+                GROUP BY oi.dish_id
+            ) AS t
+            JOIN dishes d ON d.id = t.dish_id
+            ORDER BY t.value DESC
+            LIMIT :limit;
+        `;
+        return await DB.sequelize.query(sql, {
             type: QueryTypes.SELECT,
             replacements,
         });
@@ -144,19 +168,25 @@ export const ReportRepo = {
         range?: DateRange,
         status?: string | string[],
     ) {
-        const dialect = sequelize.getDialect();
+        const dialect = DB.sequelize.getDialect();
         const periodExpr = periodSelect(period, dialect);
         const replacements: any = {};
         let whereSql = 'WHERE 1=1';
         if (range?.startDate) {
-            whereSql +=
-                ' AND COALESCE(orders.created_at, orders.createdAt) >= :startDate';
-            replacements.startDate = range.startDate;
+            whereSql += ' AND orders.created_at >= :startDate';
+            replacements.startDate = `${formatInTimeZone(
+                parseISO(range.startDate),
+                'Asia/Tokyo',
+                'yyyy-MM-dd',
+            )} 00:00:00`;
         }
         if (range?.endDate) {
-            whereSql +=
-                ' AND COALESCE(orders.created_at, orders.createdAt) <= :endDate';
-            replacements.endDate = range.endDate;
+            whereSql += ' AND orders.created_at < :endDate';
+            replacements.endDate = `${formatInTimeZone(
+                addDays(parseISO(range.endDate), 1),
+                'Asia/Tokyo',
+                'yyyy-MM-dd',
+            )} 00:00:00`;
         }
         const statuses = status
             ? Array.isArray(status)
@@ -167,15 +197,15 @@ export const ReportRepo = {
         replacements.statuses = statuses;
 
         const sql = `
-			SELECT ${periodExpr} AS period,
-				   AVG(COALESCE(orders.total_amount, orders."totalAmount")) AS average_order_value,
-				   COUNT(*) AS orders_count
-			FROM orders
-			${whereSql}
-			GROUP BY period
-			ORDER BY period ASC;
-		`;
-        return await sequelize.query(sql, {
+            SELECT ${periodExpr} AS period,
+               AVG(orders.total_amount) AS average_order_value,
+               COUNT(*) AS orders_count
+            FROM orders
+            ${whereSql}
+            GROUP BY period
+            ORDER BY period ASC;
+        `;
+        return await DB.sequelize.query(sql, {
             type: QueryTypes.SELECT,
             replacements,
         });

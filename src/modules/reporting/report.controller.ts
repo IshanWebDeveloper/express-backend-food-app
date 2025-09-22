@@ -4,6 +4,7 @@ import {
     getSalesByPeriodService,
     getTopSellingItemsService,
 } from './report.service';
+import { getDishService } from '../dish/dish.service';
 
 export const getSalesByPeriodController = async (
     req: Request,
@@ -25,7 +26,7 @@ export const getTopSellingItemsController = async (
 ) => {
     try {
         const data = await getTopSellingItemsService(req.query);
-        res.json({ success: true, data });
+        return res.json({ success: true, data });
     } catch (err) {
         next(err);
     }

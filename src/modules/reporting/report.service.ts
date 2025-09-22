@@ -5,11 +5,19 @@ import {
     validateSalesQuery,
     validateTopItemsQuery,
 } from './report.validator';
+import { parseISO } from 'date-fns';
+import { format } from 'date-fns-tz/fp';
 
 export const getSalesByPeriodService = async (query: any) => {
     const { error, value } = validateSalesQuery(query);
     if (error) throw new CustomError(error.details[0].message, 400);
     const { period, startDate, endDate, status } = value;
+    console.log('getSalesByPeriodService', {
+        period,
+        startDate,
+        endDate,
+        status,
+    });
     return await ReportRepo.getSalesByPeriod(
         period as Period,
         { startDate, endDate },
@@ -17,7 +25,15 @@ export const getSalesByPeriodService = async (query: any) => {
     );
 };
 
-export const getTopSellingItemsService = async (query: any) => {
+export const getTopSellingItemsService = async (
+    query: any,
+): Promise<
+    Array<{
+        dish_id: string;
+        name: string;
+        value: string;
+    }>
+> => {
     const { error, value } = validateTopItemsQuery(query);
     if (error) throw new CustomError(error.details[0].message, 400);
     const { metric, startDate, endDate, limit, status } = value;
