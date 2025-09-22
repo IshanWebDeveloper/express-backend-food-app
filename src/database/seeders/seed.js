@@ -79,17 +79,26 @@ module.exports = {
 
         // Categories
         const categoryNames = [
-            'Pizza',
-            'Burgers',
-            'Salads',
-            'Chinese',
+            '⭐ Meal deals ⭐',
+            '🥇Top 10 🥇',
+            '🥗 Salads 🥗',
+            '💪 Gym food 💪',
+            '❤️ Sides ❤️',
+            '🌯 Rainbow Wraps 🌯',
+            '🔥 Hot Power Bowls 🔥',
+            'Smoothies, shakes & juice',
+            'Snacks',
+            'Platters',
             'Desserts',
-            'Sushi',
-            'Drinks',
+            'Cold Drinks',
         ];
         const categories = [];
-        for (const name of categoryNames) {
-            categories.push(await Category.create({ name }));
+        for (let i = 0; i < categoryNames.length; i++) {
+            const c = await Category.create({
+                name: categoryNames[i],
+                position: i + 1,
+            });
+            categories.push(c);
         }
 
         // Dishes
@@ -143,7 +152,14 @@ module.exports = {
             const order = await Order.create({
                 user_id: user.id,
                 total_amount: 0,
-                status: 'pending',
+                placed_at: faker.date.soon({ days: 1, refDate: new Date() }),
+                status: faker.helpers.arrayElement([
+                    'pending',
+                    'confirmed',
+                    'preparing',
+                    'delivered',
+                    'cancelled',
+                ]),
             });
             const itemCount = faker.number.int({ min: 1, max: 5 });
 
