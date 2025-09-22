@@ -1,6 +1,6 @@
 components:
     schemas:
-        Food:
+        Dish:
             type: object
             properties:
                 id:
@@ -8,19 +8,24 @@ components:
                     format: uuid
                 name:
                     type: string
+                ingredients:
+                    type: string
                 price:
                     type: number
-                category_id:
-                    type: string
-                    format: uuid
                 description:
                     type: string
-                preparation_time:
-                    type: integer
                 rating:
                     type: number
                 image_url:
                     type: string
+                calories:
+                    type: integer
+                category_id:
+                    type: string
+                    format: uuid
+                restaurant_id:
+                    type: string
+                    format: uuid
                 created_at:
                     type: string
                     format: date-time
@@ -28,12 +33,14 @@ components:
                     type: string
                     format: date-time
 
-        CreateFoodRequest:
+        CreateDishRequest:
             type: object
             required:
                 - name
                 - price
                 - category_id
+                - restaurant_id
+                - rating
             properties:
                 name:
                     type: string
@@ -43,10 +50,19 @@ components:
                 category_id:
                     type: string
                     format: uuid
+                restaurant_id:
+                    type: string
+                    format: uuid
+                rating:
+                    type: number
                 description:
                     type: string
+                ingredients:
+                    type: string
+                calories:
+                    type: integer
 
-        UpdateFoodRequest:
+        UpdateDishRequest:
             type: object
             properties:
                 name:
@@ -57,5 +73,14 @@ components:
                 category_id:
                     type: string
                     format: uuid
+                restaurant_id:
+                    type: string
+                    format: uuid
                 description:
                     type: string
+                ingredients:
+                    type: string
+                calories:
+                    type: integer
+                rating:
+                    type: number

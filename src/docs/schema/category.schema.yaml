@@ -6,6 +6,8 @@ components:
                 id:
                     type: string
                     format: uuid
+                position:
+                    type: integer
                 name:
                     type: string
                 description:
@@ -20,6 +22,8 @@ components:
                     type: string
                 description:
                     type: string
+                position:
+                    type: integer
 
         UpdateCategoryRequest:
             type: object
@@ -28,3 +32,5 @@ components:
                     type: string
                 description:
                     type: string
+                position:
+                    type: integer
