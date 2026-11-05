@@ -6,7 +6,6 @@ import {
     validateTopItemsQuery,
 } from './report.validator';
 import { parseISO } from 'date-fns';
-import { format } from 'date-fns-tz/fp';
 
 export const getSalesByPeriodService = async (query: any) => {
     const { error, value } = validateSalesQuery(query);

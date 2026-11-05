@@ -41,8 +41,6 @@ const sequelize = new Sequelize.Sequelize(
     },
 );
 
-sequelize.authenticate();
-
 export async function syncDatabase() {
     try {
         const shouldSync = DB_SYNC || NODE_ENV === 'development';

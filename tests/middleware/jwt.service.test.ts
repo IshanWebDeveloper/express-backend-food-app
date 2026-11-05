@@ -22,8 +22,10 @@ describe('JWT Service', () => {
 
         const token = await generateAccessToken(payload, secretKey);
 
-        expect(jwt.sign).toHaveBeenCalledWith(payload, secretKey);
-        expect(token).toBe('Bearer mockedToken');
+        expect(jwt.sign).toHaveBeenCalledWith(payload, secretKey, {
+            expiresIn: '15m',
+        });
+        expect(token).toBe('mockedToken');
     });
 
     test('verifyAccessToken should return the correct payload when token is valid', async () => {

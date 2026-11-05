@@ -1,5 +1,9 @@
 # Express Backend Food App
 
+[![CI](https://github.com/IshanWebDeveloper/express-backend-food-app/actions/workflows/ci.yml/badge.svg)](https://github.com/IshanWebDeveloper/express-backend-food-app/actions/workflows/ci.yml)
+
+API for [food-app](https://github.com/IshanWebDeveloper/food-app), the Expo client.
+
 Node.js + Express backend for a food ordering application, using Sequelize ORM with MySQL and a modular architecture. OpenAPI docs are served at /api-docs.
 
 ## Environment Variables

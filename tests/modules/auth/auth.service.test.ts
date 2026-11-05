@@ -11,7 +11,10 @@ import {
     validateSignUp,
     validateSignIn,
 } from '../../../src/modules/auth/auth.validator';
-import { generateAccessToken } from '../../../src/middlewares/jwt.service';
+import {
+    generateAccessToken,
+    generateRefreshToken,
+} from '../../../src/middlewares/jwt.service';
 
 jest.mock('../../../src/modules/auth/auth.repo');
 jest.mock('../../../src/database', () => ({
@@ -109,8 +112,24 @@ describe('signUpService', () => {
 
         (repo.createUser as jest.Mock).mockResolvedValue(newUser);
 
+        (generateAccessToken as jest.Mock).mockResolvedValue('access_token');
+        (generateRefreshToken as jest.Mock).mockResolvedValue('refresh_token');
+
         const result = await signUpService(userData);
-        expect(result).toEqual({ user: newUser });
+        expect(result).toEqual({
+            user: {
+                id: 1,
+                name: undefined,
+                email: 'new@example.com',
+                username: 'new-username',
+                delivery_address: undefined,
+                phone_number: undefined,
+            },
+            accessToken: 'access_token',
+            refreshToken: 'refresh_token',
+        });
+        expect(result.user).not.toHaveProperty('password');
+        expect(repo.saveRefreshToken).toHaveBeenCalledWith(1, 'refresh_token');
         expect(hash).toHaveBeenCalledWith(userData.password, 10);
     });
 });
@@ -131,6 +150,9 @@ describe('signInService', () => {
         (generateAccessToken as jest.Mock).mockResolvedValue(
             'mocked_access_token',
         );
+        (generateRefreshToken as jest.Mock).mockResolvedValue(
+            'mocked_refresh_token',
+        );
         jest.spyOn(require('bcrypt'), 'compareSync').mockReturnValue(true);
 
         const result = await signInService({
@@ -138,6 +160,7 @@ describe('signInService', () => {
             password: 'correct_password',
             name: 'Test User',
             username: 'testuser',
+            is_Social_login: false,
             created_at: undefined,
             updated_at: undefined,
         });
@@ -145,9 +168,18 @@ describe('signInService', () => {
         expect(repo.findUserByEmail).toHaveBeenCalledWith('test@example.com');
         expect(generateAccessToken).toHaveBeenCalled();
         expect(result).toEqual({
-            user: mockUser,
+            user: {
+                id: undefined,
+                name: 'Test User',
+                email: 'test@example.com',
+                username: 'testuser',
+                delivery_address: undefined,
+                phone_number: undefined,
+            },
             accessToken: 'mocked_access_token',
+            refreshToken: 'mocked_refresh_token',
         });
+        expect(result.user).not.toHaveProperty('password');
     });
 
     it('should throw 401 error if user is not found', async () => {
@@ -159,6 +191,7 @@ describe('signInService', () => {
                 password: 'wrong_password',
                 name: 'Test User',
                 username: 'testuser',
+                is_Social_login: false,
                 created_at: undefined,
                 updated_at: undefined,
             }),
@@ -175,6 +208,7 @@ describe('signInService', () => {
                 password: 'wrong_password',
                 name: 'Test User',
                 username: 'testuser',
+                is_Social_login: false,
                 created_at: undefined,
                 updated_at: undefined,
             }),
@@ -194,6 +228,7 @@ describe('signInService', () => {
                 password: '',
                 name: '',
                 username: '',
+                is_Social_login: false,
                 created_at: undefined,
                 updated_at: undefined,
             }),
